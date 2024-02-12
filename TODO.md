@@ -1,7 +1,8 @@
 
 1) create server api : Jackie
 2) load csv handler : Kevin
-   1) test
+   1) tests
+   2) deal with malformed csv
 3) read csv handler : Kevin 
    1) test
 4) search csv: Jackie

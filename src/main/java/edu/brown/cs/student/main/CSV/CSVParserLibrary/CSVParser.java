@@ -156,6 +156,9 @@ public class CSVParser<T> {
     return rows;
   }
 
+
+  //TODO: deal with malformed csv files
+
   /**
    *
    * @param reader Reader object that reads csv data
