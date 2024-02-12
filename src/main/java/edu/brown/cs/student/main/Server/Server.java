@@ -59,6 +59,9 @@ public class Server {
 
         // Sets up data needed for the OrderHandler. You will likely not read from local
         // JSON in this sprint.
+
+        //from gearup
+
 //        String menuAsJson = SoupAPIUtilities.readInJson("data/menu.json");
 //        List<Soup> menu = new ArrayList<>();
 //        try {
@@ -87,7 +90,7 @@ public class Server {
         //endpoints
         Spark.get("loadcsv", new LoadCSVHandler());
         Spark.get("viewcsv", new ViewCSVHandler());
-        Spark.get("searchcsv", new ViewCSVHandler());
+        Spark.get("searchcsv", new SearchCSVHandler());
         Spark.get("broadband", new BroadbandDataHandler());
 
         // Set up a route to handle GET requests to the root URL "/"
