@@ -32,8 +32,8 @@ public class Server {
    */
 
     public static final String CONSTANT1 = "value1";
-
-
+    public static String filepath;
+    public static List<Star> stars = new ArrayList<>();
 
 
     // What are the endpoints that we can access... What happens if you go to them?
@@ -95,32 +95,9 @@ public class Server {
 
         //endpoints
 
-        String filepath = "data/stardata.csv";
-        BufferedReader br = new BufferedReader(new FileReader(filepath));
-        CSVParser<Star> parser = new CSVParser<>(br, (List<String> row) -> {
-            Star star = new Star();
-            star.setStarID(row.get(0));
-            star.setProperName(row.get(1));
-            star.setX(row.get(2));
-            star.setY(row.get(3));
-            star.setZ(row.get(4));
-            return star;
-        }, true, false);
-
-        List<Star> stars = parser.parseIntoCSVRowObject(br, true, (List<String> row) -> {
-            Star star = new Star();
-            star.setStarID(row.get(0));
-            star.setProperName(row.get(1));
-            star.setX(row.get(2));
-            star.setY(row.get(3));
-            star.setZ(row.get(4));
-            return star;
-        });
-
-
 
         Spark.get("loadcsv", new LoadCSVHandler());
-        Spark.get("viewcsv", new ViewCSVHandler(stars));
+        Spark.get("viewcsv", new ViewCSVHandler());
         Spark.get("searchcsv", new SearchCSVHandler());
         Spark.get("broadband", new BroadbandDataHandler());
 
