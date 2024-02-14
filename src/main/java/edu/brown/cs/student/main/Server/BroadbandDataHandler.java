@@ -25,7 +25,7 @@ public class BroadbandDataHandler implements Route {
   private String stateCode;
   private String countyCode;
 
-  private BroadbandDataHandler() throws IOException, URISyntaxException, InterruptedException {
+  BroadbandDataHandler() throws IOException, URISyntaxException, InterruptedException {
     this.stateList = fetchAllStates();
   }
 
@@ -50,7 +50,6 @@ public class BroadbandDataHandler implements Route {
       }
     }
     return new NoRecordFailureResponse().serialize();
-
   }
 
   public record SuccessResponse(String response_type, Map<String, Object> responseMap) {
@@ -80,6 +79,7 @@ public class BroadbandDataHandler implements Route {
 
   /**
    * returned when no matching county/state was found from user's query
+   *
    * @param response_type
    */
   public record NoRecordFailureResponse(String response_type) {
@@ -99,13 +99,11 @@ public class BroadbandDataHandler implements Route {
   private String sendRequest(String state, String county)
       throws URISyntaxException, IOException, InterruptedException {
 
-    String baseUrl = "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:";
-    String fullUrl = baseUrl + county + "&in=state:" + state;
-    HttpRequest buildBoredApiRequest =
-        HttpRequest.newBuilder()
-            .uri(new URI(fullUrl))
-            .GET()
-            .build();
+    String baseUrl =
+        "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:";
+    String fullUrl = baseUrl + this.countyCode + "&in=state:" + this.stateCode;
+    System.out.println("Full url: " + fullUrl);
+    HttpRequest buildBoredApiRequest = HttpRequest.newBuilder().uri(new URI(fullUrl)).GET().build();
 
     // Send that API request then store the response in this variable
     HttpResponse<String> sentBoredApiResponse =
@@ -113,6 +111,7 @@ public class BroadbandDataHandler implements Route {
             .build()
             .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
     // TODO: add error handling for bad response types
+    System.out.println("Final response: \n" + sentBoredApiResponse.body());
     return sentBoredApiResponse.body();
   }
 
@@ -120,29 +119,25 @@ public class BroadbandDataHandler implements Route {
       throws URISyntaxException, IOException, InterruptedException {
     for (LocationData s : stateList) {
       if (s.getNAME().equals(state)) {
+        System.out.println(s.getNAME());
+        System.out.println(state);
         this.stateCode = s.getState();
         // Now that a state code is defined, we can also find the county code
         try {
-          // Do this conversion because state names can have spaces in them (rhode island)
-          String baseUrl = "http://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*&in=state:";
-          String encodedState = URLEncoder.encode(state, StandardCharsets.UTF_8);
-          URI uri = new URI(baseUrl + encodedState);
-
+          String baseUrl =
+              "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*&in=state:" + this.stateCode;
           // Same api request/response format as get states method
           HttpRequest buildBoredApiRequest =
-              HttpRequest.newBuilder()
-                  .uri(new URI(uri.toString()))
-                  .GET()
-                  .build();
+              HttpRequest.newBuilder().uri(new URI(baseUrl)).GET().build();
 
           // Send that API request then store the response in this variable
           HttpResponse<String> sentBoredApiResponse =
               HttpClient.newBuilder()
                   .build()
                   .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
-
-          List<LocationData> countiesInState = BroadbandDataAPIUtilities.deserializeLocData(
-              sentBoredApiResponse.body());
+          // System.out.println("Response: \n " + sentBoredApiResponse.body());
+          List<LocationData> countiesInState =
+              BroadbandDataAPIUtilities.deserializeLocData(sentBoredApiResponse.body());
           for (LocationData c : countiesInState) {
             // NAME contains "<county> county|city, <state>"
             if (c.getNAME().contains(county)) {
@@ -163,30 +158,27 @@ public class BroadbandDataHandler implements Route {
    * the full census API
    *
    * @return a list of LocationData objects containing a populated state field and name, although
-   * name should only contain the plain english name of the state, and state should contain the
-   * internal census code for that state
-   * @throws IOException          thrown when deserialization fails
+   *     name should only contain the plain english name of the state, and state should contain the
+   *     internal census code for that state
+   * @throws IOException thrown when deserialization fails
    * @throws InterruptedException thrown when request not fulfilled
-   * @throws URISyntaxException   thrown when URI not in proper format
+   * @throws URISyntaxException thrown when URI not in proper format
    */
   private List<LocationData> fetchAllStates()
       throws IOException, InterruptedException, URISyntaxException {
 
     try {
 
-      String STATE_CODES_URI = "http://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*";
+      String STATE_CODES_URI = "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*";
       HttpRequest buildBoredApiRequest =
-          HttpRequest.newBuilder()
-              .uri(new URI(STATE_CODES_URI))
-              .GET()
-              .build();
+          HttpRequest.newBuilder().uri(new URI(STATE_CODES_URI)).GET().build();
 
       // Send that API request then store the response in this variable
       HttpResponse<String> sentBoredApiResponse =
           HttpClient.newBuilder()
               .build()
               .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
-
+      // System.out.println("repsonse: " + sentBoredApiResponse.body());
       return BroadbandDataAPIUtilities.deserializeLocData(sentBoredApiResponse.body());
 
       // TODO: modify to look at response status for error handling
