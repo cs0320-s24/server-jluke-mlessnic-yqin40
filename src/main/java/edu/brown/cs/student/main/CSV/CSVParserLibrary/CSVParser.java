@@ -1,6 +1,6 @@
 package edu.brown.cs.student.main.CSV.CSVParserLibrary;
 
-import edu.brown.cs.student.main.CSVParserLibrary.Exceptions.FactoryFailureException;
+import edu.brown.cs.student.main.CSV.CSVParserLibrary.Exceptions.FactoryFailureException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -23,6 +23,8 @@ public class CSVParser<T> {
   public CreatorFromRow<T> creatorFromRow;
   public boolean hasHeaders;
   public boolean ignoreCase;
+  public List<List<String>> data;
+
 
 // constructor (user story 1)
   public CSVParser(String filepath, boolean hasHeaders, boolean ignoreCase) {
@@ -123,18 +125,29 @@ public class CSVParser<T> {
     }
   }
 
+  public List<List<String>> loadCSV() {
+    data = this.parseToStringsFromFilepath();
+    return data;
+  }
+
+
   /* *method to read csv data as designated by a reader object
    *
    * @param reader
    * @param hasHeaders
    * @return List of List of strings that contain the csv data
    */
-  public List<List<String>> parseToStringsFromReader(Reader reader, boolean hasHeaders) {
+  private List<List<String>> parseToStringsFromReader(Reader reader, boolean hasHeaders) {
     try (BufferedReader br = new BufferedReader(reader)){
       return createRowsFromReader(br);
     } catch (IOException e) { // TODO: figure out what to add here for the exception
       throw new RuntimeException(e);
     }
+  }
+
+  public List<List<String>> loadCSV(Reader reader, boolean hasHeaders) {
+    data = this.parseToStringsFromReader(reader, hasHeaders);
+    return data;
   }
 
   /**
