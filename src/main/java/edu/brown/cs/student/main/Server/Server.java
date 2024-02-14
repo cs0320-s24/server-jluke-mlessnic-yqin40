@@ -7,10 +7,13 @@ import static spark.Spark.after;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
+import edu.brown.cs.student.main.CSV.Census.Census;
 import edu.brown.cs.student.main.CSV.Star.Star;
 import spark.Spark;
 
@@ -33,11 +36,20 @@ public class Server {
 
     public static final String CONSTANT1 = "value1";
     public static String filepath;
-    public static List<Star> stars = new ArrayList<>();
+    private static List<Census> censusList = new ArrayList<>();
+
+    public static void setcensusList(List<Census> censusList) {
+        Server.censusList = censusList;
+    }
+
+    public static List<Census> getcensusList() {
+        return Server.censusList;
+    }
+
 
 
     // What are the endpoints that we can access... What happens if you go to them?
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
         int port = 3232;
         Spark.port(port);
     /*

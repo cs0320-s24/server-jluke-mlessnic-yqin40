@@ -3,12 +3,9 @@ package edu.brown.cs.student.main.Server;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
-import edu.brown.cs.student.main.CSV.Star.Star;  // 确保这是Star类的正确导入路径
+import edu.brown.cs.student.main.CSV.Census.Census;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,8 +14,6 @@ import java.util.Map;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import static edu.brown.cs.student.main.Server.Server.filepath;
 
 /**
  * Handler class for viewing CSV content via API endpoint.
@@ -52,22 +47,21 @@ public class ViewCSVHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         // Directly access the updated Server.stars list here
-        List<Map<String, Object>> starsInfo = new ArrayList<>();
-        for (Star star : Server.stars) {  // Access the static variable directly
-            Map<String, Object> starInfo = new HashMap<>();
-            starInfo.put("StarID", star.StarID);  // Use getters instead of direct field access
-            starInfo.put("ProperName", star.ProperName);
-            starInfo.put("X", star.X);
-            starInfo.put("Y", star.Y);
-            starInfo.put("Z", star.Z);
-            starsInfo.add(starInfo);
+        List<Map<String, Object>> censusListInfo = new ArrayList<>();
+        for (Census census : Server.getcensusList()) {
+            Map<String, Object> censusInfo = new HashMap<>();
+            censusInfo.put("City/Town", census.getCity());
+            censusInfo.put("Median Household Income", census.getMedianHouseholdIncome());
+            censusInfo.put("Median Family Income", census.getMedianFamilyIncome());
+            censusInfo.put("Per Capital Income", census.getPerCapitalIncome());
+            censusListInfo.add(censusInfo);
         }
 
         // Serialize and return the stars info
-        if (starsInfo.isEmpty()) {
+        if (censusListInfo.isEmpty()) {
             return "No data available. Please load a CSV file first.";
         } else {
-            return new CSVContentSuccessResponse(starsInfo).serialize();
+            return new CSVContentSuccessResponse(censusListInfo).serialize();
         }
     }
 
@@ -76,11 +70,11 @@ public class ViewCSVHandler implements Route {
      */
     public static class CSVContentSuccessResponse {
         private final String response_type;
-        private final List<Map<String, Object>> starsInfo;
+        private final List<Map<String, Object>> censusListinfo;
 
-        public CSVContentSuccessResponse(List<Map<String, Object>> starsInfo) {
+        public CSVContentSuccessResponse(List<Map<String, Object>> censusListinfo) {
             this.response_type = "success";
-            this.starsInfo = starsInfo;
+            this.censusListinfo = censusListinfo;
         }
 
         public String serialize() {
@@ -88,20 +82,18 @@ public class ViewCSVHandler implements Route {
                 Moshi moshi = new Moshi.Builder().build();
                 Type listType = Types.newParameterizedType(List.class, Map.class);
                 JsonAdapter<List<Map<String, Object>>> jsonAdapter = moshi.adapter(listType);
-                return jsonAdapter.toJson(this.starsInfo);
+                return jsonAdapter.toJson(this.censusListinfo);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw e;
             }
         }
 
-        // Getters for private fields if needed
         public String getResponse_type() {
             return response_type;
         }
-
-        public List<Map<String, Object>> getStarsInfo() {
-            return starsInfo;
+        public List<Map<String, Object>> getcensusListinfo() {
+            return censusListinfo;
         }
     }
 
@@ -121,7 +113,6 @@ public class ViewCSVHandler implements Route {
             return jsonAdapter.toJson(this);
         }
 
-        // Getter for private field if needed
         public String getResponse_type() {
             return response_type;
         }

@@ -1,7 +1,7 @@
 package edu.brown.cs.student.main.Server;
 
 import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
-import edu.brown.cs.student.main.CSV.Star.Star;
+import edu.brown.cs.student.main.CSV.Census.Census;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -14,37 +14,32 @@ import java.util.*;
 public class LoadCSVHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        // 从请求中获取文件路径参数
         Server.filepath = request.queryParams("filepath");
 //        Server.filepath = "data/stardata.csv";
 
 
-        // 检查文件路径是否提供
         if (Server.filepath == null || Server.filepath.isEmpty()) {
             return "No CSV file path provided.";
         }
 
-        // 使用提供的文件路径解析CSV文件
         try (BufferedReader br = new BufferedReader(new FileReader(Server.filepath))) {
-            CSVParser<Star> parser = new CSVParser<>(br, (List<String> row) -> {
-                Star star = new Star();
-                star.setStarID(row.get(0));
-                star.setProperName(row.get(1));
-                star.setX(row.get(2));
-                star.setY(row.get(3));
-                star.setZ(row.get(4));
-                return star;
+            CSVParser<Census> parser = new CSVParser<>(br, (List<String> row) -> {
+                Census census = new Census();
+                census.setCity(row.get(0));
+                census.setMedianFamilyIncome(row.get(1));
+                census.setMedianFamilyIncome(row.get(2));
+                census.setPerCapitalIncome(row.get(3));
+                return census;
             }, true, false);
-            List<Star> stars = parser.parseIntoCSVRowObject(br, true, (List<String> row) -> {
-                Star star = new Star();
-                star.setStarID(row.get(0));
-                star.setProperName(row.get(1));
-                star.setX(row.get(2));
-                star.setY(row.get(3));
-                star.setZ(row.get(4));
-                return star;
+            List<Census> censusList = parser.parseIntoCSVRowObject(br, true, (List<String> row) -> {
+                Census census = new Census();
+                census.setCity(row.get(0));
+                census.setMedianFamilyIncome(row.get(1));
+                census.setMedianFamilyIncome(row.get(2));
+                census.setPerCapitalIncome(row.get(3));
+                return census;
             });
-            Server.stars = stars;
+            Server.setcensusList(censusList);
             return "CSV file loaded successfully.";
         } catch (FileNotFoundException e) {
             return "CSV file not found.";
