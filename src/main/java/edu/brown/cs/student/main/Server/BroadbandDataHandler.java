@@ -7,11 +7,9 @@ import edu.brown.cs.student.main.BroadbandDataAPI.LocationData;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +44,7 @@ public class BroadbandDataHandler implements Route {
     for (LocationData loc : bbLoc) {
       if (loc.getState().equals(this.stateCode) && loc.getCounty().equals(this.countyCode)) {
         responseMap.put(loc.getNAME(), loc);
+        // System.out.println("Response map \n" + responseMap);
         return new SuccessResponse(responseMap).serialize();
       }
     }
@@ -125,7 +124,8 @@ public class BroadbandDataHandler implements Route {
         // Now that a state code is defined, we can also find the county code
         try {
           String baseUrl =
-              "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*&in=state:" + this.stateCode;
+              "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*&in=state:"
+                  + this.stateCode;
           // Same api request/response format as get states method
           HttpRequest buildBoredApiRequest =
               HttpRequest.newBuilder().uri(new URI(baseUrl)).GET().build();
