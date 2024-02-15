@@ -16,11 +16,16 @@ import java.util.Objects;
  */
 public class BroadbandDataAPIUtilities {
 
+  /**
+   * construct the api utilities object
+   */
   private BroadbandDataAPIUtilities() {}
 
   /**
    * Deserialize a json string back into a list. Each row should represent one county from which we
-   * can gather "the percentage of households with broadband access for a target location"
+   * can gather "the percentage of households with broadband access for a target location".
+   * Uses switching to determine which format of LocationData was returned (i.e. what info is
+   * present in the jsonList)
    *
    * @param jsonList a json response from the census API containing the percent of broadband access
    *     by household for a given state and county
@@ -38,7 +43,7 @@ public class BroadbandDataAPIUtilities {
 
       // Convert state list back into a list of locationdata
       List<LocationData> locationDataList = new ArrayList<>();
-      // Get rid of header row if there
+      // Get rid of header row if present
       if (nestedList.get(0).get(0).equals("NAME")) {
         nestedList.remove(0);
       }
@@ -47,13 +52,16 @@ public class BroadbandDataAPIUtilities {
 
         switch (innerList.size()) { // Ensure inner list has at least two elements (NAME and state)
           case 2:
+            // Only state and state code given
             locationDataList.add(new LocationData(innerList.get(0), innerList.get(1), "", 0.0f));
             break;
           case 3:
+            // State, state code, county code given
             locationDataList.add(
                 new LocationData(innerList.get(0), innerList.get(1), innerList.get(2), 0.0f));
             break;
           case 4:
+            // State, broadband data, state code, county code given
             locationDataList.add(
                 new LocationData(
                     innerList.get(0),
@@ -61,17 +69,19 @@ public class BroadbandDataAPIUtilities {
                     innerList.get(3),
                     Float.parseFloat(innerList.get(1))));
             break;
-            // TODO: add default case for unexpected sizes
+            // TODO: add default case for unexpected sizes?
+          // Default case not provided because handler acts as proxy to prevent any other census
+          // api access outside of these cases
         }
       }
       return locationDataList;
 
     } catch (IOException e) {
-      // In a real system, we wouldn't println like this, but it's useful for demonstration:
+      // Internal print for debugging
       System.err.println("BroadbandHandler: string wasn't valid JSON.");
       throw e;
     } catch (JsonDataException e) {
-      // In a real system, we wouldn't println like this, but it's useful for demonstration:
+      // Internal print for debugging
       System.err.println("BroadbandHandler: JSON wasn't in the right format.");
       throw e;
     }
@@ -79,7 +89,7 @@ public class BroadbandDataAPIUtilities {
 
   /**
    * This method converts a list of broadband data information back into a json string. It may be
-   * particularly useful when sending the information to the user endpoint
+   * particularly useful when sending the information to the user endpoint (unused in this case)
    *
    * @param LocData a list where each row is one location's broadband access information
    * @return a json-formatted string built from the given list of broadband access data
