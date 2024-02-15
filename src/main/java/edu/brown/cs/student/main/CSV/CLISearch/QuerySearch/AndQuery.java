@@ -1,7 +1,7 @@
 package edu.brown.cs.student.main.CSV.CLISearch.QuerySearch;
 
-import edu.brown.cs.student.main.CLISearch.Exceptions.SearchArgumentException;
-import edu.brown.cs.student.main.CLISearch.Searcher;
+
+import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.Exceptions.SearchArgumentException;
 
 import java.util.List;
 

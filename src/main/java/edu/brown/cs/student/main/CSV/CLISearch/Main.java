@@ -1,7 +1,8 @@
 package edu.brown.cs.student.main.CSV.CLISearch;
 
-import edu.brown.cs.student.main.CLISearch.QuerySearch.Query;
-import edu.brown.cs.student.main.CSVParserLibrary.CSVParser;
+
+import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.Searcher;
+import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -162,9 +163,6 @@ public final class Main {
       return argsWithoutFlags;
     }
 
-    private Query searchUsingQuery (String text){
-      return null;
-    }
 
 
 

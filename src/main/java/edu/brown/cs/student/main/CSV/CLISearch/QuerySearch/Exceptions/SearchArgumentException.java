@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.CSV.CLISearch.Exceptions;
+package edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.Exceptions;
 
 public class SearchArgumentException extends Exception{
 

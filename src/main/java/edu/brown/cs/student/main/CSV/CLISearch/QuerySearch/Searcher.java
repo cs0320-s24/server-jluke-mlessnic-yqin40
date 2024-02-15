@@ -1,7 +1,8 @@
-package edu.brown.cs.student.main.CSV.CLISearch;
+package edu.brown.cs.student.main.CSV.CLISearch.QuerySearch;
 
-import edu.brown.cs.student.main.CLISearch.QuerySearch.Query;
-import edu.brown.cs.student.main.CLISearch.QuerySearch.QueryBuilder;
+
+import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.Query;
+import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -75,38 +75,6 @@ public class Server {
                     response.header("Access-Control-Allow-Methods", "*");
                 });
 
-        // Sets up data needed for the OrderHandler. You will likely not read from local
-        // JSON in this sprint.
-
-        //from gearup
-
-//        String menuAsJson = SoupAPIUtilities.readInJson("data/menu.json");
-//        List<Soup> menu = new ArrayList<>();
-//        try {
-//            menu = SoupAPIUtilities.deserializeMenu(menuAsJson);
-//        } catch (Exception e) {
-//            // See note in ActivityHandler about this broad Exception catch... Unsatisfactory, but gets
-//            // the job done in the gearup where it is not the focus.
-//            e.printStackTrace();
-//            System.err.println("Errored while deserializing the menu");
-//        }  String menuAsJson = SoupAPIUtilities.readInJson("data/menu.json");
-//        List<Soup> menu = new ArrayList<>();
-//        try {
-//            menu = SoupAPIUtilities.deserializeMenu(menuAsJson);
-//        } catch (Exception e) {
-//            // See note in ActivityHandler about this broad Exception catch... Unsatisfactory, but gets
-//            // the job done in the gearup where it is not the focus.
-//            e.printStackTrace();
-//            System.err.println("Errored while deserializing the menu");
-//        }
-
-        // Setting up the handler for the GET /order and /activity endpoints
-//        Spark.get("order", new OrderHandler(menu)); //end point is called order, use OrderHandler handle what comes after order endpoint
-//        Spark.get("activity", new ActivityHandler()); //end point is called activity, use ActivityHandler to access stuff after the end point
-        //NOTE: This is the part that you will write yourself!
-
-        //endpoints
-
 
         Spark.get("loadcsv", new LoadCSVHandler());
         Spark.get("viewcsv", new ViewCSVHandler());
