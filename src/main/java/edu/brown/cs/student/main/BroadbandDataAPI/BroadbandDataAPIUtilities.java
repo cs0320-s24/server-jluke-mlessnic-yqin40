@@ -16,17 +16,16 @@ import java.util.Objects;
  */
 public class BroadbandDataAPIUtilities {
 
-  private BroadbandDataAPIUtilities() {
-  }
+  private BroadbandDataAPIUtilities() {}
 
   /**
    * Deserialize a json string back into a list. Each row should represent one county from which we
    * can gather "the percentage of households with broadband access for a target location"
    *
    * @param jsonList a json response from the census API containing the percent of broadband access
-   *                 by household for a given state and county
+   *     by household for a given state and county
    * @return a list where each row is a particular location and the percent of broadband access for
-   * that location
+   *     that location
    * @throws IOException thrown when the json provided is not in the correct format
    */
   public static List<LocationData> deserializeLocData(String jsonList) throws IOException {
@@ -39,22 +38,30 @@ public class BroadbandDataAPIUtilities {
 
       // Convert state list back into a list of locationdata
       List<LocationData> locationDataList = new ArrayList<>();
+      // Get rid of header row if there
+      if (nestedList.get(0).get(0).equals("NAME")) {
+        nestedList.remove(0);
+      }
       for (List<String> innerList : nestedList) {
         // System.out.println("Inner list size: " + innerList.size());
+
         switch (innerList.size()) { // Ensure inner list has at least two elements (NAME and state)
           case 2:
-            locationDataList.add(new LocationData(innerList.get(0), innerList.get(1),
-                "", 0.0f));
+            locationDataList.add(new LocationData(innerList.get(0), innerList.get(1), "", 0.0f));
             break;
           case 3:
-            locationDataList.add(new LocationData(innerList.get(0), innerList.get(1),
-                innerList.get(2), 0.0f));
+            locationDataList.add(
+                new LocationData(innerList.get(0), innerList.get(1), innerList.get(2), 0.0f));
             break;
           case 4:
-            locationDataList.add(new LocationData(innerList.get(0), innerList.get(2),
-                innerList.get(3), Float.parseFloat(innerList.get(1))));
+            locationDataList.add(
+                new LocationData(
+                    innerList.get(0),
+                    innerList.get(2),
+                    innerList.get(3),
+                    Float.parseFloat(innerList.get(1))));
             break;
-          // TODO: add default case for unexpected sizes
+            // TODO: add default case for unexpected sizes
         }
       }
       return locationDataList;

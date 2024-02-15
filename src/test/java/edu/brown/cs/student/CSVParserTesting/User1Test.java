@@ -1,13 +1,12 @@
 package edu.brown.cs.student.CSVParserTesting;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import edu.brown.cs.student.main.CLISearch.Main;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class User1Test {
 
