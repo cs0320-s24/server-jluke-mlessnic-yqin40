@@ -1,6 +1,6 @@
 package edu.brown.cs.student.main.CSV.CLISearch.QuerySearch;
 
-import edu.brown.cs.student.main.CLISearch.Exceptions.SearchArgumentErrorException;
+import edu.brown.cs.student.main.CLISearch.Exceptions.SearchArgumentException;
 import edu.brown.cs.student.main.CLISearch.Searcher;
 
 import java.util.List;
@@ -15,14 +15,14 @@ public class NotQuery implements Query {
         //create childQuery
         try {
             this.parseText(text);
-        } catch (SearchArgumentErrorException e) {
+        } catch (SearchArgumentException e) {
             throw new RuntimeException(e);
         }
     }
 
 
     @Override
-    public void parseText(String text) throws SearchArgumentErrorException {
+    public void parseText(String text) throws SearchArgumentException {
         QueryBuilder queryBuilder = new QueryBuilder(text);
         Query childQuery = queryBuilder.build();
     }

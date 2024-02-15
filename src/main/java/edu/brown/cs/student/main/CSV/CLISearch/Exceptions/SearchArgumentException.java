@@ -1,8 +1,8 @@
 package edu.brown.cs.student.main.CSV.CLISearch.Exceptions;
 
-public class SearchArgumentErrorException extends Exception{
+public class SearchArgumentException extends Exception{
 
-    public SearchArgumentErrorException(String message) {
+    public SearchArgumentException(String message) {
         super(message);
     }
 

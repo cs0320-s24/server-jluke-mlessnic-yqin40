@@ -1,6 +1,6 @@
 package edu.brown.cs.student.main.CSV.CLISearch.QuerySearch;
 
-import edu.brown.cs.student.main.CLISearch.Exceptions.SearchArgumentErrorException;
+import edu.brown.cs.student.main.CLISearch.Exceptions.SearchArgumentException;
 import edu.brown.cs.student.main.CLISearch.Searcher;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class OrQuery implements Query {
         //create two child Queries
         try {
             this.parseText(text);
-        } catch (SearchArgumentErrorException e) {
+        } catch (SearchArgumentException e) {
             throw new RuntimeException(e);
         }
     }
@@ -28,12 +28,12 @@ public class OrQuery implements Query {
 
 
     @Override
-    public void parseText(String text) throws SearchArgumentErrorException {
+    public void parseText(String text) throws SearchArgumentException {
         //separate text at the comma that is not inside the inner parentheses
 
         List<String> args = this.separateString(text);
         if (args.size() > 2) {
-            throw new SearchArgumentErrorException("Too many arguments for this type of query");
+            throw new SearchArgumentException("Too many arguments for OrQuery");
         }
         String arg1 = args.get(0);
         String arg2 = args.get(1);

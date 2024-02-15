@@ -1,6 +1,6 @@
 package edu.brown.cs.student.main.CSV.CLISearch.QuerySearch;
 
-import edu.brown.cs.student.main.CLISearch.Exceptions.SearchArgumentErrorException;
+import edu.brown.cs.student.main.CLISearch.Exceptions.SearchArgumentException;
 import edu.brown.cs.student.main.CLISearch.Searcher;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class ColumnQuery implements Query {
         //find search val and column id
         try {
             this.parseText(text);
-        } catch (SearchArgumentErrorException e) {
+        } catch (SearchArgumentException e) {
             throw new RuntimeException(e);
         }
 
@@ -32,9 +32,9 @@ public class ColumnQuery implements Query {
     }
 
     @Override
-    public void parseText(String text) throws SearchArgumentErrorException {
+    public void parseText(String text) throws SearchArgumentException {
         if (text.matches(".*[\\(\\)].*")) {
-            throw new SearchArgumentErrorException("Nested arguments are not permitted within ColumnQuery");
+            throw new SearchArgumentException("Nested arguments are not permitted within ColumnQuery");
         }
 
         String[] parts = this.text.split(",");
@@ -43,7 +43,7 @@ public class ColumnQuery implements Query {
         this.columnIdentifier = parts[1];
 
         if (parts.length > 2) {
-            throw new SearchArgumentErrorException("Too many arguments for this type of query");
+            throw new SearchArgumentException("Too many arguments for this type of query");
         }
     }
 

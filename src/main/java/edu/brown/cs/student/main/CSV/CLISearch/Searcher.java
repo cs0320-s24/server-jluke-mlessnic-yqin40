@@ -38,8 +38,8 @@ public class Searcher {
     if (this.hasHeaders && indicesFound.contains(0)) {
       indicesFound.remove(0);
     }
-    System.out.println("Searcher.search("+searchVal+") complete");
-    System.out.println(indicesFound);
+//    System.out.println("Searcher.search("+searchVal+") complete");
+//    System.out.println(indicesFound);
     return indicesFound;
   }
 
