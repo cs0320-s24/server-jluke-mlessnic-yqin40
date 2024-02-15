@@ -12,5 +12,17 @@
    1) regular testing
    2) mock testing
 6) caching: Micah + team
-7) 
+
+2/14
+
+* test csvload and csvview (kevin)
+* fix csvsearch, connect to server and test (jackie)
+* serializing api for our server to localhost (team)
+* caching (user story 3)
+* mock testing (micah)
+* error handling (team)
+   internal errors
+   server errors
+* code cleanup (team)
+* javadocs (team)
    
