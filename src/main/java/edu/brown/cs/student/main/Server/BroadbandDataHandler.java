@@ -61,7 +61,7 @@ public class BroadbandDataHandler implements Route {
     /**
      * @return serialized location objects that match user's query
      */
-    String serialize() {
+    String serialize() {  //TODO specify?
       try {
         // Initialize Moshi which takes in this class and returns it as JSON
         Moshi moshi = new Moshi.Builder().build();
