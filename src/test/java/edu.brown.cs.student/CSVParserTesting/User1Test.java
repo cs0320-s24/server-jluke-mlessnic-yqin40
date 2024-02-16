@@ -3,6 +3,8 @@ package edu.brown.cs.student.CSVParserTesting;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.brown.cs.student.main.CSV.CLISearch.Main;
+import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
+
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,8 +24,8 @@ public class User1Test {
 
   @Test
   public void simpleFindNoColumnID() {
-    String filepath = "data/census/dol_ri_earnings_disparity.csv";
-    String searchVal = "Black";
+    String filepath = "data/census.csv";
+    String searchVal = "Barrington";
     String[] args = {filepath, searchVal};
 
     List<Integer> foundIndices = new Main(args).run();

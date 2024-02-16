@@ -132,7 +132,7 @@ public class CSVParser<T> {
    * @param hasHeaders
    * @return List of List of strings that contain the csv data
    */
-  private List<List<String>> parseToStringsFromReader(Reader reader, boolean hasHeaders) {
+  public List<List<String>> parseToStringsFromReader(Reader reader, boolean hasHeaders) {
     try (BufferedReader br = new BufferedReader(reader)) {
       return createRowsFromReader(br);
     } catch (IOException e) { // TODO: figure out what to add here for the exception
