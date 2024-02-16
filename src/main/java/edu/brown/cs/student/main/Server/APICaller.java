@@ -1,7 +1,5 @@
 package edu.brown.cs.student.main.Server;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.BroadbandDataAPI.BroadbandDataAPIUtilities;
 import edu.brown.cs.student.main.BroadbandDataAPI.LocationData;
 import java.io.IOException;
@@ -11,14 +9,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import spark.Request;
-import spark.Response;
-import spark.Route;
 
 /**
  * This class handles retrieving broadband accessibility information from the US census when given a
@@ -34,11 +26,11 @@ public class APICaller implements LocationDataFinder {
    * Initialize the stateList, allows the lookup of states in later queries without having to ping
    * the census api each time. This list should always exist (no need to remove due to caching)
    *
-   * @throws IOException thrown when deserialization of the census api fails
-   * @throws URISyntaxException thrown when the provided URI is not in a valid format for the census
-   *     api
+   * @throws IOException          thrown when deserialization of the census api fails
+   * @throws URISyntaxException   thrown when the provided URI is not in a valid format for the
+   *                              census api
    * @throws InterruptedException thrown when the get request fails (e.g. connection to census is
-   *     lost)
+   *                              lost)
    */
   public APICaller() throws IOException, URISyntaxException, InterruptedException {
     this.stateList = fetchAllStates();
@@ -46,6 +38,7 @@ public class APICaller implements LocationDataFinder {
 
   /**
    * Used for testing
+   *
    * @return the statecode, populated after findMatchingCodes method
    */
   public String getStateCode() {
@@ -54,22 +47,33 @@ public class APICaller implements LocationDataFinder {
 
   /**
    * Used for testing
+   *
    * @return the statecode, populated after findMatchingCodes method
    */
   public String getCountyCode() {
     return countyCode;
   }
 
+  /**
+   * Do the actual pinging of the ACS api and return the requested information
+   *
+   * @param state    plain-english state
+   * @param county   plain-english county
+   * @param dataVars optional variables a user could request for
+   * @return a location data object containing the state, county, their codes, and a list of
+   * variables the user requested info about
+   */
   @Override
   public LocationData find(String state, String county, String dataVars) {
-    try{
+    try {
       // Step 1: populate state and county codes for specified state and county
       findMatchingCodes(state, county);
       // Step 2: grab the broadband data for that location
-      List<LocationData> tempBBLocs = BroadbandDataAPIUtilities.deserializeLocData(broadbandRequest(this.stateCode, this.countyCode));
+      List<LocationData> tempBBLocs = BroadbandDataAPIUtilities.deserializeLocData(
+          broadbandRequest(this.stateCode, this.countyCode));
       LocationData bbLoc = null;
-      for (LocationData loc : tempBBLocs){
-        if (loc.getState().equals(this.stateCode) && loc.getCounty().equals(this.countyCode)){
+      for (LocationData loc : tempBBLocs) {
+        if (loc.getState().equals(this.stateCode) && loc.getCounty().equals(this.countyCode)) {
           bbLoc = loc;
         }
       }
@@ -79,7 +83,7 @@ public class APICaller implements LocationDataFinder {
       // Step 3: grab any optional variable the user provided
       List<String> requestedData = new ArrayList<>(bbLoc.getData());
       // Adds the variable data to the list of strings
-      if(!dataVars.isBlank()) {
+      if (!dataVars.isBlank()) {
         List<LocationData> varData = BroadbandDataAPIUtilities.deserializeLocData(
             optionalVarRequest(dataVars, state, county));
         for (LocationData loc : varData) {
@@ -92,7 +96,7 @@ public class APICaller implements LocationDataFinder {
       // Step 4: combine into a single LocationData obj and return
       return new LocationData(bbLoc.getNAME(), requestedData, this.stateCode, this.countyCode);
 
-    } catch (Exception e){
+    } catch (Exception e) {
       System.err.println("Exception encountered: " + e.toString());
       return null;
     }
@@ -102,12 +106,12 @@ public class APICaller implements LocationDataFinder {
    * given the internal census state and county codes, make the final request to retrieve the
    * broadband data associated with that location
    *
-   * @param state internal code associated with state provided by user from the endpoint
+   * @param state  internal code associated with state provided by user from the endpoint
    * @param county internal code associated with county provided by user from the endpoint
    * @return the json associated with that state and county code containing the broadband data at
-   *     that location
-   * @throws URISyntaxException thrown when the uri is in the wrong format for the census api
-   * @throws IOException thrown when HTTP response fails to build
+   * that location
+   * @throws URISyntaxException   thrown when the uri is in the wrong format for the census api
+   * @throws IOException          thrown when HTTP response fails to build
    * @throws InterruptedException thrown when connection to census fails
    */
   public String broadbandRequest(String state, String county)
@@ -147,14 +151,15 @@ public class APICaller implements LocationDataFinder {
     System.out.println("Final optional var response: \n" + sentBoredApiResponse.body());
     return sentBoredApiResponse.body();
   }
+
   /**
    * This method finds the associated state code and county code for an endpoint user's query within
    * the census api then populates the global code variables with those codes
    *
-   * @param state plain english state provided by endpoint
+   * @param state  plain english state provided by endpoint
    * @param county plain english county provided by endpoint
-   * @throws URISyntaxException thrown when URI is in the improper format
-   * @throws IOException thrown when the HTTP response fails
+   * @throws URISyntaxException   thrown when URI is in the improper format
+   * @throws IOException          thrown when the HTTP response fails
    * @throws InterruptedException thrown when the connection is interrupted with the census api
    */
   public void findMatchingCodes(String state, String county)
@@ -203,11 +208,11 @@ public class APICaller implements LocationDataFinder {
    * the full census API
    *
    * @return a list of LocationData objects containing a populated state field and name, although
-   *     name should only contain the plain english name of the state, and state should contain the
-   *     internal census code for that state
-   * @throws IOException thrown when deserialization fails
+   * name should only contain the plain english name of the state, and state should contain the
+   * internal census code for that state
+   * @throws IOException          thrown when deserialization fails
    * @throws InterruptedException thrown when request not fulfilled
-   * @throws URISyntaxException thrown when URI not in proper format
+   * @throws URISyntaxException   thrown when URI not in proper format
    */
   private List<LocationData> fetchAllStates()
       throws IOException, InterruptedException, URISyntaxException {

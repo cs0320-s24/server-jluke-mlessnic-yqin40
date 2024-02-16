@@ -50,48 +50,75 @@ return graphs.getUnchecked(key);
 
  */
 
-public class ProxyCache implements LocationDataFinder{
+/**
+ * A proxy class for caching LocationData with a request as a key
+ */
+public class ProxyCache implements LocationDataFinder {
 
-    LoadingCache<Request, Response> myCache;
+  LoadingCache<Request, LocationData> myCache;
 
-    //note: after instantiation, you cannot change the max size or max time of the cache
-    public ProxyCache(long maxSize, long maxTime, TimeUnit timeUnit) {
+  //note: after instantiation, you cannot change the max size or max time of the cache
 
-        // instantiate the cache
-        this.myCache = CacheBuilder.newBuilder()
-                .maximumSize(maxSize) //evicts after a specified number of entries
-                .expireAfterWrite(maxTime, timeUnit) //evicts after a specified amount of time has passed
-                //.removalListener(MY_LISTENER)
-                .build(
-                        //we don't necessarily need this if we are adding completed key, value pairs
-                        new CacheLoader<>() {
-                            @Override
-                            public Response load(Request key) throws Exception {
-                                //could call the api from here to load a response
-                                return null;
-                            }
-                        }
+  /**
+   * Construct the cache with the given params
+   *
+   * @param maxSize  max size before cache will delete old items, in bits
+   * @param maxTime  max time before items will be deleted
+   * @param timeUnit unit of time for maxTime
+   */
+  public ProxyCache(long maxSize, long maxTime, TimeUnit timeUnit) {
 
-                        );
+    // instantiate the cache
+    this.myCache = CacheBuilder.newBuilder()
+        .maximumSize(maxSize) //evicts after a specified number of entries
+        .expireAfterWrite(maxTime, timeUnit) //evicts after a specified amount of time has passed
+        //.removalListener(MY_LISTENER)
+        .build(
+            //we don't necessarily need this if we are adding completed key, value pairs
+            new CacheLoader<>() {
+              @Override
+              public LocationData load(Request key) throws Exception {
+                //could call the api from here to load a response
+                return null;
+              }
+            }
 
-        //end of cache builder
+        );
 
-    }
+    //end of cache builder
 
-    @Override
-    public LocationData find(String state, String county, String dataVars) {
-        return null;
-    }
+  }
 
-    public Response getResponse(Request request) {
-        try {
-            return this.myCache.get(request);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
+  /**
+   * Artifact of using this class within the acsproxy class
+   *
+   * @param state    -
+   * @param county   -
+   * @param dataVars -
+   * @return always returns null
+   */
+  @Override
+  public LocationData find(String state, String county, String dataVars) {
+    return null;
+  }
 
-    public void addToCache(Request request, Response response) {
-        this.myCache.put(request, response);
-    }
+  /**
+   * get a location from the cache
+   *
+   * @param request spark request object passed from handler
+   * @return location if present or null otherwise
+   */
+  public LocationData getLoc(Request request) {
+    return this.myCache.getIfPresent(request);
+  }
+
+  /**
+   * Adds a new key, value pair to cache
+   *
+   * @param request key for entry
+   * @param loc     value for entry
+   */
+  public void addToCache(Request request, LocationData loc) {
+    this.myCache.put(request, loc);
+  }
 }
