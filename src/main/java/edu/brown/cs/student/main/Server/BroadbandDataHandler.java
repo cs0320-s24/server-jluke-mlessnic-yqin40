@@ -300,8 +300,10 @@ public class BroadbandDataHandler implements Route {
           List<LocationData> countiesInState =
               BroadbandDataAPIUtilities.deserializeLocData(sentBoredApiResponse.body());
           for (LocationData c : countiesInState) {
-            // NAME contains "<county> county|city, <state>"
-            if (c.getNAME().contains(county)) {
+            // NAME contains "<county> county|city, <state>", splitting on comma and grabbing the
+            // first index retrieves only county name
+            String countyOnly = c.getNAME().split(",")[0];
+            if (countyOnly.equals(county)) {
               this.countyCode = c.getCounty();
             }
           }
