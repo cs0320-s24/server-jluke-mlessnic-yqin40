@@ -14,7 +14,7 @@ import spark.Route;
 public class LoadCSVHandler implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    Server.filepath = request.queryParams("filepath");
+        Server.filepath = request.queryParams("filepath");
     //        Server.filepath = "data/stardata.csv";
 
         if (request.queryParams().contains("filepath")) {

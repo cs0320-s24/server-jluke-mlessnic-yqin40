@@ -11,4 +11,6 @@ public class ProxyCache implements LocationDataFinder {
   }
 
   public void addToCache(LocationData data) {}
+
+
 }

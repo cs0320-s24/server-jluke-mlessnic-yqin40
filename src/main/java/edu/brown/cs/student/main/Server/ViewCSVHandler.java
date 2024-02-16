@@ -55,8 +55,7 @@ public class ViewCSVHandler implements Route {
 
     // Serialize and return the stars info
     if (censusListInfo.isEmpty()) {
-      return "No data available. Please load a CSV file first."; // should use the failure class
-      // instead of return ing a string
+      return new NOCSVDataResponse("error_datasource, Try to load CSV File").serialize();
     } else {
       return new CSVContentSuccessResponse(censusListInfo).serialize();
     }
@@ -83,15 +82,23 @@ public class ViewCSVHandler implements Route {
         throw e;
       }
     }
+  }
 
-    public String getResponse_type() {
-      return response_type;
+  public record NOCSVDataResponse(String response_type, String exception_message) {
+
+    public NOCSVDataResponse(String exception_message) {
+      this("201", exception_message);
     }
 
-    public List<Map<String, Object>> getcensusListinfo() {
-      return censusListinfo;
+    /**
+     * @return this response, serialized as Json
+     */
+    String serialize() {
+      Moshi moshi = new Moshi.Builder().build();
+      return moshi.adapter(ViewCSVHandler.NOCSVDataResponse.class).toJson(this);
     }
   }
+
 
   /** Failure response structure for CSV content viewing when no match is found. */
   public static class CSVContentNoMatchFailureResponse {
@@ -108,9 +115,6 @@ public class ViewCSVHandler implements Route {
       return jsonAdapter.toJson(this);
     }
 
-    public String getResponse_type() {
-      return response_type;
-    }
   }
 
 
