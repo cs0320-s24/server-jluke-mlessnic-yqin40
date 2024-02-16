@@ -55,7 +55,8 @@ public class ViewCSVHandler implements Route {
 
     // Serialize and return the stars info
     if (censusListInfo.isEmpty()) {
-      return "No data available. Please load a CSV file first."; //should use the failure class instead of return ing a string
+      return "No data available. Please load a CSV file first."; // should use the failure class
+      // instead of return ing a string
     } else {
       return new CSVContentSuccessResponse(censusListInfo).serialize();
     }
@@ -111,4 +112,6 @@ public class ViewCSVHandler implements Route {
       return response_type;
     }
   }
+
+
 }

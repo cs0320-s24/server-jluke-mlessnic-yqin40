@@ -23,25 +23,26 @@ public class LocationData {
   private final String county;
 
   @Json(name = "S2802_C03_022E")
-  private final float S2802_C03_022E;
+  private final List<String> data;
 
   /**
    * Construct a location data object with the given fields
+   *
    * @param NAME the plain english name of the location (either county, state or just state)
    * @param state the internal state code returned by a call to the census api
    * @param county the internal county code returned by a call to the census api
-   * @param S2802_C03_022E the percentage of households with broadband internet access
-   *                       for a given county and state, returned by the census api
+   * @param data a list where each element is one of the fields requested by the user
    */
-  public LocationData(String NAME, String state, String county, float S2802_C03_022E) {
+  public LocationData(String NAME, List<String> data, String state, String county) {
     this.NAME = NAME;
     this.state = state;
     this.county = county;
-    this.S2802_C03_022E = S2802_C03_022E;
+    this.data = new ArrayList<>(data);
   }
 
   /**
    * getter for the name field
+   *
    * @return retrieve the NAME field
    */
   public String getNAME() {
@@ -50,6 +51,7 @@ public class LocationData {
 
   /**
    * getter for the state field
+   *
    * @return retrieve the state field
    */
   public String getState() {
@@ -58,6 +60,7 @@ public class LocationData {
 
   /**
    * getter for the county field
+   *
    * @return retrieve the county field
    */
   public String getCounty() {
@@ -66,23 +69,25 @@ public class LocationData {
 
   /**
    * getter for the broadband percentage field (unused)
+   *
    * @return retrieve the broadband field as a float
    */
-  public float getBroadBand() {
-    return this.S2802_C03_022E;
+  public List<String> getData() {
+    return this.data;
   }
 
   /**
-   * convert the object back into a list of strings, used for moshi serialization
-   * because moshi does not know how to serialize the LocationData object directly but
-   * does know how to handle a list of strings
-   * @return the object as a list of strings, in the same order as it appears in the
-   *         census api (NAME, broadband, state, county)
+   * convert the object back into a list of strings, used for moshi serialization because moshi does
+   * not know how to serialize the LocationData object directly but does know how to handle a list
+   * of strings
+   *
+   * @return the object as a list of strings, in the same order as it appears in the census api
+   *     (NAME, broadband, state, county)
    */
   public List<String> toList() {
-    List<String> returnList = new ArrayList<>();
-    returnList.add(this.NAME);
-    returnList.add(Float.toString(this.S2802_C03_022E));
+    List<String> returnList = new ArrayList<>(this.data);
+    // Add the name first, then data, then the state and county code
+    returnList.add(0, this.NAME);
     returnList.add(this.state);
     returnList.add(this.county);
     return returnList;

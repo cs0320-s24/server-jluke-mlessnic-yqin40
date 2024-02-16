@@ -1,25 +1,28 @@
 package edu.brown.cs.student.main.Server;
 
+import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
 import edu.brown.cs.student.main.CSV.Census.Census;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 public class LoadCSVHandler implements Route {
-    @Override
-    public Object handle(Request request, Response response) throws Exception {
-        Server.filepath = request.queryParams("filepath");
-//        Server.filepath = "data/stardata.csv";
+  @Override
+  public Object handle(Request request, Response response) throws Exception {
+    Server.filepath = request.queryParams("filepath");
+    //        Server.filepath = "data/stardata.csv";
 
-
-        if (Server.filepath == null || Server.filepath.isEmpty()) {
-            return "No CSV file path provided.";
+        if (request.queryParams().contains("filepath")) {
+            if (Server.filepath == null || Server.filepath.isEmpty()) {
+                return new NoFilePathResponse("error_bad_request: Empty File Path").serialize();
+            }
+        } else {
+            return new BadJSONResponse("error_bad_json: Query parameter 'filepath' is missing or incorrect.").serialize();
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(Server.filepath))) {
@@ -40,13 +43,90 @@ public class LoadCSVHandler implements Route {
                 return census;
             });
             Server.setcensusList(censusList);
-            return "CSV file loaded successfully.";
+            return new SuccessResponse("CSV file loaded successfully at : " + Server.filepath).serialize();
         } catch (FileNotFoundException e) {
-            return "CSV file not found.";
+            return new CSVFileNotFoundResponse("Error_datasource: " + Server.filepath).serialize();
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error loading CSV file.";
+            return new FileInaccessible("File inaccessible: " + Server.filepath).serialize();
         }
     }
+
+    public record CSVFileNotFoundResponse(String response_type, String exception_message) {
+
+        public CSVFileNotFoundResponse(String exception_message) {
+            this("201", exception_message);
+        }
+
+        /**
+         * @return this response, serialized as Json
+         */
+        String serialize() {
+            Moshi moshi = new Moshi.Builder().build();
+            return moshi.adapter(LoadCSVHandler.CSVFileNotFoundResponse.class).toJson(this);
+        }
+    }
+
+    public record NoFilePathResponse(String response_type, String exception_message) {
+
+        public NoFilePathResponse(String exception_message) {
+            this("202", exception_message);
+        }
+
+        /**
+         * @return this response, serialized as Json
+         */
+        String serialize() {
+            Moshi moshi = new Moshi.Builder().build();
+            return moshi.adapter(LoadCSVHandler.NoFilePathResponse.class).toJson(this);
+        }
+    }
+
+    public record BadJSONResponse(String response_type, String exception_message) {
+
+        public BadJSONResponse(String exception_message) {
+            this("203", exception_message);
+        }
+
+        /**
+         * @return this response, serialized as Json
+         */
+        String serialize() {
+            Moshi moshi = new Moshi.Builder().build();
+            return moshi.adapter(LoadCSVHandler.BadJSONResponse.class).toJson(this);
+        }
+    }
+
+    public record FileInaccessible (String response_type, String exception_message) {
+
+        public FileInaccessible(String exception_message) {
+            this("204", exception_message);
+        }
+
+        /**
+         * @return this response, serialized as Json
+         */
+        String serialize() {
+            Moshi moshi = new Moshi.Builder().build();
+            return moshi.adapter(LoadCSVHandler.FileInaccessible.class).toJson(this);
+        }
+    }
+
+    public record SuccessResponse(String response_type, String message) {
+
+        public SuccessResponse(String message) {
+            this("success", message);
+        }
+
+        /**
+         * @return this response, serialized as Json
+         */
+        String serialize() {
+            Moshi moshi = new Moshi.Builder().build();
+            return moshi.adapter(LoadCSVHandler.SuccessResponse.class).toJson(this);
+        }
+    }
+
+
 }
 
