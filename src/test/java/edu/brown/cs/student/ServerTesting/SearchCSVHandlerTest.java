@@ -53,9 +53,9 @@ public class SearchCSVHandlerTest {
 
     // We'll use okio's Buffer class here
     System.out.println(clientConnection.getInputStream());
-    SearchCSVHandler.CSVSearchSuccessResponse response =
+    SearchCSVHandler.SuccessSearchResponse response =
         moshi
-            .adapter(SearchCSVHandler.CSVSearchSuccessResponse.class)
+            .adapter(SearchCSVHandler.SuccessSearchResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
     //
     //        Soup carrot = new Soup("Carrot", Arrays.asList("carrot", "onion", "celery",

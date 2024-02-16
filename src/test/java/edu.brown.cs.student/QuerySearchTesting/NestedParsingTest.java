@@ -3,7 +3,7 @@ package edu.brown.cs.student.QuerySearchTesting;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-//import edu.brown.cs.student.main.CSV.CLISearch.Exceptions.SearchArgumentException;
+
 import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.Exceptions.SearchArgumentException;
 import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.QueryBuilder;
 import org.junit.jupiter.api.Test;
