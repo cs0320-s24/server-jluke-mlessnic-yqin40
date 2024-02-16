@@ -40,8 +40,24 @@ public class APICaller implements LocationDataFinder {
    * @throws InterruptedException thrown when the get request fails (e.g. connection to census is
    *     lost)
    */
-  APICaller() throws IOException, URISyntaxException, InterruptedException {
+  public APICaller() throws IOException, URISyntaxException, InterruptedException {
     this.stateList = fetchAllStates();
+  }
+
+  /**
+   * Used for testing
+   * @return the statecode, populated after findMatchingCodes method
+   */
+  public String getStateCode() {
+    return stateCode;
+  }
+
+  /**
+   * Used for testing
+   * @return the statecode, populated after findMatchingCodes method
+   */
+  public String getCountyCode() {
+    return countyCode;
   }
 
   @Override
@@ -94,11 +110,11 @@ public class APICaller implements LocationDataFinder {
    * @throws IOException thrown when HTTP response fails to build
    * @throws InterruptedException thrown when connection to census fails
    */
-  private String broadbandRequest(String state, String county)
+  public String broadbandRequest(String state, String county)
       throws URISyntaxException, IOException, InterruptedException {
 
     String baseUrl =
-        "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,,S2802_C03_022E"
+        "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E"
             + "&for=county:";
     String fullUrl = baseUrl + county + "&in=state:" + state;
     System.out.println("Full url: " + fullUrl);
@@ -114,7 +130,7 @@ public class APICaller implements LocationDataFinder {
     return sentBoredApiResponse.body();
   }
 
-  private String optionalVarRequest(String vars, String state, String county)
+  public String optionalVarRequest(String vars, String state, String county)
       throws URISyntaxException, IOException, InterruptedException {
 
     String fullUrl =
@@ -141,7 +157,7 @@ public class APICaller implements LocationDataFinder {
    * @throws IOException thrown when the HTTP response fails
    * @throws InterruptedException thrown when the connection is interrupted with the census api
    */
-  private void findMatchingCodes(String state, String county)
+  public void findMatchingCodes(String state, String county)
       throws URISyntaxException, IOException, InterruptedException {
     for (LocationData s : stateList) {
       if (s.getNAME().equals(state)) {

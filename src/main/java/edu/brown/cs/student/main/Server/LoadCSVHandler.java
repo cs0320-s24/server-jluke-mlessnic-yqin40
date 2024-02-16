@@ -40,7 +40,7 @@ public class LoadCSVHandler implements Route {
             CSVParser<Census> parser = new CSVParser<>(br, (List<String> row) -> {
                 Census census = new Census();
                 census.setCity(row.get(0));
-                census.setMedianFamilyIncome(row.get(1));
+                census.setMedianHouseholdIncome(row.get(1));
                 census.setMedianFamilyIncome(row.get(2));
                 census.setPerCapitalIncome(row.get(3));
                 return census;
@@ -48,7 +48,7 @@ public class LoadCSVHandler implements Route {
             List<Census> censusList = parser.parseIntoCSVRowObject(br, true, (List<String> row) -> {
                 Census census = new Census();
                 census.setCity(row.get(0));
-                census.setMedianFamilyIncome(row.get(1));
+                census.setMedianHouseholdIncome(row.get(1));
                 census.setMedianFamilyIncome(row.get(2));
                 census.setPerCapitalIncome(row.get(3));
                 return census;
@@ -137,6 +137,7 @@ public class LoadCSVHandler implements Route {
             return moshi.adapter(LoadCSVHandler.SuccessResponse.class).toJson(this);
         }
     }
+
 
 
 }
