@@ -57,6 +57,13 @@ public class BroadbandDataHandler implements Route {
 
     // Pulling specific params guarantees any junk params will be ignored. Do we want to check that
     // users only give good param set?
+
+    // Default get the broadband data, otherwise get whatever type the user provides
+    String request_type = "S2802_C03_022E";
+    if (!request.queryParams("get").isEmpty()){
+      request_type = request.queryParams("get");
+    }
+    System.out.println(request_type);
     String county = request.queryParams("county");
     String state = request.queryParams("state");
     // Protects against users not giving a state or county, elsewhere handles bad state/county
@@ -76,12 +83,12 @@ public class BroadbandDataHandler implements Route {
       // Step 1: find the matching state and county codes for the user query
       findMatchingCodes(state, county);
       // Step 2: send the full request and get back the json (including bb data)
-      String broadbandJson = sendRequest(this.stateCode, this.countyCode);
+      String broadbandJson = sendRequest(request_type, this.stateCode, this.countyCode);
       // Step 3: deserialize and pass that data back to the user in the respMap
       List<LocationData> bbLoc = BroadbandDataAPIUtilities.deserializeLocData(broadbandJson);
       for (LocationData loc : bbLoc) {
         if (loc.getState().equals(this.stateCode) && loc.getCounty().equals(this.countyCode)) {
-          responseMap.put(loc.getNAME(), loc.toList());
+          responseMap.put(loc.getNAME() + " response_type: " + request_type, loc.toList());
           // System.out.println("Response map \n" + responseMap);
           // Reset state and county code so if user enters a bad request next, they will
           // get a new (bad) response rather than just getting the old (good) response
@@ -236,11 +243,11 @@ public class BroadbandDataHandler implements Route {
    * @throws IOException          thrown when HTTP response fails to build
    * @throws InterruptedException thrown when connection to census fails
    */
-  private String sendRequest(String state, String county)
+  private String sendRequest(String request_type, String state, String county)
       throws URISyntaxException, IOException, InterruptedException {
 
     String baseUrl =
-        "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:";
+        "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME," + request_type + "&for=county:";
     String fullUrl = baseUrl + county + "&in=state:" + state;
     System.out.println("Full url: " + fullUrl);
     HttpRequest buildBoredApiRequest = HttpRequest.newBuilder().uri(new URI(fullUrl)).GET().build();
