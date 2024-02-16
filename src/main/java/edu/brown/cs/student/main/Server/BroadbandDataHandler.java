@@ -13,6 +13,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.print.attribute.URISyntax;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -76,11 +77,15 @@ public class BroadbandDataHandler implements Route {
           return new SuccessResponse(responseMap).serialize();
         }
       }
-    } catch (Exception e) {
-      return new NoRecordFailureResponse().serialize();
+    } catch (IOException e) {
+      return new IOExceptionFailureResponse(e.toString()).serialize();
+    } catch (URISyntaxException e){
+      return new URISyntaxFailureResponse(e.toString()).serialize();
+    } catch (InterruptedException e){
+      return new InterruptionFailureResponse(e.toString()).serialize();
     }
 
-    return new NoRecordFailureResponse().serialize();
+    return new NoRecordFailureResponse("No record found").serialize();
   }
 
   /**
@@ -130,10 +135,10 @@ public class BroadbandDataHandler implements Route {
    * @param response_type success or failure as a code, given here to allow users to define a custom
    *                      code optionally or uses 204 as a default (for failure)
    */
-  public record NoRecordFailureResponse(String response_type) {
+  public record NoRecordFailureResponse(String response_type, String exception_message) {
 
-    public NoRecordFailureResponse() {
-      this("204");
+    public NoRecordFailureResponse(String exception_message) {
+      this("204", exception_message);
     }
 
     /**
@@ -142,6 +147,67 @@ public class BroadbandDataHandler implements Route {
     String serialize() {
       Moshi moshi = new Moshi.Builder().build();
       return moshi.adapter(NoRecordFailureResponse.class).toJson(this);
+    }
+  }
+
+  /**
+   * Generate response for IOExceptions
+   * @param response_type failure code
+   * @param exception_message IOException thrown from elsewhere, converted to a string
+   */
+  public record IOExceptionFailureResponse(String response_type, String exception_message) {
+
+    public IOExceptionFailureResponse(String exception_message) {
+      this("205", exception_message);
+    }
+
+    /**
+     * @return this response, serialized as Json
+     */
+    String serialize() {
+      Moshi moshi = new Moshi.Builder().build();
+      return moshi.adapter(IOExceptionFailureResponse.class).toJson(this);
+    }
+  }
+
+  /**
+   * Generate response for URI Syntax failures
+   * @param response_type response code value
+   * @param exception_message toString of URI exception, thrown from elsewhere
+   */
+  public record URISyntaxFailureResponse(String response_type, String exception_message) {
+
+    public URISyntaxFailureResponse(String exception_message) {
+      this("206", exception_message);
+    }
+
+    /**
+     * @return this response, serialized as Json
+     */
+    String serialize() {
+      Moshi moshi = new Moshi.Builder().build();
+      return moshi.adapter(URISyntaxFailureResponse.class).toJson(this);
+    }
+  }
+
+  /**
+   * Generate response for interruption exceptions
+   * @param response_type response code
+   * @param exception_message toString of interruption exception, thrown from other internal
+   *                          functions
+   */
+  public record InterruptionFailureResponse(String response_type, String exception_message) {
+
+    public InterruptionFailureResponse(String exception_message) {
+      this("207", exception_message);
+    }
+
+    /**
+     * @return this response, serialized as Json
+     */
+    String serialize() {
+      Moshi moshi = new Moshi.Builder().build();
+      return moshi.adapter(InterruptionFailureResponse.class).toJson(this);
     }
   }
 
