@@ -16,6 +16,13 @@ import spark.Route;
 
 /** Handler class for viewing CSV content via API endpoint. */
 public class ViewCSVHandler implements Route {
+  /**
+   * @param request The request object providing information about the HTTP request
+   * @param response The response object providing functionality for modifying the response
+   * @return Return CSV content if csv file load successfully before.
+   * @throws NOCSVDataResponse if no CSV file did not load before.
+
+   */
 
   public ViewCSVHandler() throws FileNotFoundException {}
 

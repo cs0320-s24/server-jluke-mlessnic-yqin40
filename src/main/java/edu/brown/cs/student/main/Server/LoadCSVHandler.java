@@ -12,13 +12,22 @@ import spark.Response;
 import spark.Route;
 
 public class LoadCSVHandler implements Route {
+    /**
+     *
+     * @param request The request object providing information about the HTTP request
+     * @param response The response object providing functionality for modifying the response
+     * @return The response if CSV File Load Successfully or not.
+     * @throws FileNotFoundException if File Path is incorrect
+     * @throws Exception if Wrong File provided by end user.
+     * @throws NoFilePathResponse if file path is empty.
+     * @throws BadJSONResponse if Query parameter 'filepath' is missing or incorrect.
+     */
   @Override
   public Object handle(Request request, Response response) throws Exception {
         Server.filepath = request.queryParams("filepath");
     //        Server.filepath = "data/stardata.csv";
     //      System.out.println(request.queryParams());
     //      System.out.println(response.body());
-
         if (request.queryParams().contains("filepath")) {
             if (Server.filepath == null || Server.filepath.isEmpty()) {
                 return new NoFilePathResponse("error_bad_request: Empty File Path").serialize();
