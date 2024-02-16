@@ -35,7 +35,7 @@ public class Server {
    */
 
     public static final String CONSTANT1 = "value1";
-    public static String filepath;
+    public static String filepath; //why public, why does server need to know filepath?
     private static List<Census> censusList = new ArrayList<>();
 
     public static void setcensusList(List<Census> censusList) {
