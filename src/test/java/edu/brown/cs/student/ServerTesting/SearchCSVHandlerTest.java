@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 public class SearchCSVHandlerTest {
 
-  @BeforeAll
   @BeforeEach
   public void setup() {
     System.out.println("Starting test for SearchCSVHandler");
@@ -44,9 +43,10 @@ public class SearchCSVHandlerTest {
   public void simpleSearch() throws IOException {
     this.loadCsvHelper();
 
-    String searchVal = "39,603.00"; // should be first row
-    String apiRequest = "searchcsv?search=" + searchVal;
+    String searchVal = "Barrington"; // should be first row
+    String apiRequest = "searchcsv?find=" + searchVal;
     HttpURLConnection clientConnection = ServerTestingUtilities.tryRequest(apiRequest);
+
     assertEquals(200, clientConnection.getResponseCode()); // success code
 
     Moshi moshi = new Moshi.Builder().build();

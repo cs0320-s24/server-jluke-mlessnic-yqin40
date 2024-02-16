@@ -32,16 +32,16 @@ public class QueryTest {
     assertEquals(foundIndices, trueIndices);
   }
 
-//  @Test
-//  public void andNestedOrTest() {
-//    String filepath = "data/census.csv";
-//    String text = "and(or(Bristol,Wakerly),'80,727.00')" ;
-//    String[] args = {filepath, text, "-q"};
-//
-//    List<Integer> foundIndices = new Main(args).run();
-//
-//    List<Integer> trueIndices = List.of(6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-//
-//    assertEquals(foundIndices, trueIndices);
-//  }
+  @Test
+  public void andNestedOrTest() {
+    String filepath = "data/stardata.csv";
+    String text = "and(or(1,5),Zita)" ;
+    String[] args = {filepath, text, "-q"};
+
+    List<Integer> foundIndices = new Main(args).run();
+
+    List<Integer> trueIndices = List.of(6);
+
+    assertEquals(foundIndices, trueIndices);
+  }
 }
