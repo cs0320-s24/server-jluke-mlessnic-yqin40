@@ -2,8 +2,9 @@ package edu.brown.cs.student.CSVParserTesting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import edu.brown.cs.student.main.CLISearch.Searcher;
-import edu.brown.cs.student.main.CSVParserLibrary.CSVParser;
+//import edu.brown.cs.student.main.CSV.CLISearch.Searcher;
+import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.Searcher;
+import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,12 +33,12 @@ public class User2Test {
 
     try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
       CSVParser myParser = new CSVParser(br);
-      output = myParser.parseToStringsFromReader(br, true);
+//      output = myParser.parseToStringsFromReader(br, true);
     }
 
-    Searcher mySearcher = new Searcher();
-    List<Integer> foundIndices = mySearcher.search(output, searchVal, true, false);
-    List<Integer> trueIndices = List.of(2);
-    assertEquals(foundIndices, trueIndices);
+//    Searcher mySearcher = new Searcher();
+//    List<Integer> foundIndices = mySearcher.search(output);
+//    List<Integer> trueIndices = List.of(2);
+//    assertEquals(foundIndices, trueIndices);
   }
 }

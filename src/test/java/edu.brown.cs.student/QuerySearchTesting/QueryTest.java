@@ -2,7 +2,7 @@ package edu.brown.cs.student.QuerySearchTesting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import edu.brown.cs.student.main.CLISearch.Main;
+import edu.brown.cs.student.main.CSV.CLISearch.Main;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

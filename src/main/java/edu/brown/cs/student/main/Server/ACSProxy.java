@@ -15,20 +15,20 @@ public class ACSProxy {
 
   // constructor
   public ACSProxy() throws IOException, URISyntaxException, InterruptedException {
-    this.proxyCache = new ProxyCache();
+//    this.proxyCache = new ProxyCache();
     this.apiCaller = new APICaller();
   }
 
-  public LocationData getFromAPI(String state, String county) {
-    return this.apiCaller.find(state, county);
-  }
-
-  public LocationData getFromCache(String state, String county) {
-    return this.proxyCache.find(state, county);
-  }
-
-  public void addToCache(String state, String county) {
-    LocationData result = this.getFromAPI(state, county);
-    this.proxyCache.addToCache(result);
-  }
+//  public LocationData getFromAPI(String state, String county) {
+//    return this.apiCaller.find(state, county);
+//  }
+//
+//  public LocationData getFromCache(String state, String county) {
+//    return this.proxyCache.find(state, county);
+//  }
+//
+//  public void addToCache(String state, String county) {
+//    LocationData result = this.getFromAPI(state, county);
+//    this.proxyCache.addToCache(result);
+//  }
 }

@@ -1,16 +1,18 @@
 package edu.brown.cs.student.QuerySearchTesting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import edu.brown.cs.student.main.CLISearch.Exceptions.SearchArgumentException;
-import edu.brown.cs.student.main.CLISearch.QuerySearch.QueryBuilder;
+//import edu.brown.cs.student.main.CSV.CLISearch.Exceptions.SearchArgumentException;
+import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.Exceptions.SearchArgumentException;
+import edu.brown.cs.student.main.CSV.CLISearch.QuerySearch.QueryBuilder;
 import org.junit.jupiter.api.Test;
 
 public class NestedParsingTest {
   public NestedParsingTest() {}
 
   @Test
-  public void simpleParsedQuery() throws SearchArgumentException {
+  public void simpleParsedQuery() throws SearchArgumentException, SearchArgumentException {
     String text = "and(query1,query2)";
     QueryBuilder queryBuilder = new QueryBuilder(text);
     String s = queryBuilder.getTextBetweenParentheses(text);

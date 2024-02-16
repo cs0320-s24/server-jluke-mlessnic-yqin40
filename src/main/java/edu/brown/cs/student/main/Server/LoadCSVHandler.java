@@ -16,6 +16,8 @@ public class LoadCSVHandler implements Route {
   public Object handle(Request request, Response response) throws Exception {
         Server.filepath = request.queryParams("filepath");
     //        Server.filepath = "data/stardata.csv";
+    //      System.out.println(request.queryParams());
+    //      System.out.println(response.body());
 
         if (request.queryParams().contains("filepath")) {
             if (Server.filepath == null || Server.filepath.isEmpty()) {
@@ -45,7 +47,7 @@ public class LoadCSVHandler implements Route {
             Server.setcensusList(censusList);
             return new SuccessResponse("CSV file loaded successfully at : " + Server.filepath).serialize();
         } catch (FileNotFoundException e) {
-            return new CSVFileNotFoundResponse("Error_datasource: " + Server.filepath).serialize();
+            return new CSVFileNotFoundResponse("Error_datasource: No file Found at " + Server.filepath).serialize();
         } catch (Exception e) {
             e.printStackTrace();
             return new FileInaccessible("File inaccessible: " + Server.filepath).serialize();

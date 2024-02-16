@@ -17,27 +17,6 @@ import spark.Route;
 /** Handler class for viewing CSV content via API endpoint. */
 public class ViewCSVHandler implements Route {
 
-  //    BufferedReader br = new BufferedReader(new FileReader(filepath));
-  //    CSVParser<Star> parser = new CSVParser<>(br, (List<String> row) -> {
-  //        Star star = new Star();
-  //        star.setStarID(row.get(0));
-  //        star.setProperName(row.get(1));
-  //        star.setX(row.get(2));
-  //        star.setY(row.get(3));
-  //        star.setZ(row.get(4));
-  //        return star;
-  //    }, true, false);
-  //
-  //    List<Star> stars = parser.parseIntoCSVRowObject(br, true, (List<String> row) -> {
-  //        Star star = new Star();
-  //        star.setStarID(row.get(0));
-  //        star.setProperName(row.get(1));
-  //        star.setX(row.get(2));
-  //        star.setY(row.get(3));
-  //        star.setZ(row.get(4));
-  //        return star;
-  //    });
-
   public ViewCSVHandler() throws FileNotFoundException {}
 
   @Override
@@ -101,21 +80,5 @@ public class ViewCSVHandler implements Route {
 
 
   /** Failure response structure for CSV content viewing when no match is found. */
-  public static class CSVContentNoMatchFailureResponse {
-    private final String response_type;
-
-    public CSVContentNoMatchFailureResponse() {
-      this.response_type = "error";
-    }
-
-    public String serialize() {
-      Moshi moshi = new Moshi.Builder().build();
-      JsonAdapter<CSVContentNoMatchFailureResponse> jsonAdapter =
-          moshi.adapter(CSVContentNoMatchFailureResponse.class);
-      return jsonAdapter.toJson(this);
-    }
-
-  }
-
 
 }

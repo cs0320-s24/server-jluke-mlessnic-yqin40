@@ -2,10 +2,10 @@ package edu.brown.cs.student.CSVParserTesting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import edu.brown.cs.student.main.CSVParserLibrary.CSVParser;
-import edu.brown.cs.student.main.CSVParserLibrary.CSVRow;
-import edu.brown.cs.student.main.CSVParserLibrary.CreatorFromRow;
-import edu.brown.cs.student.main.CSVParserLibrary.Exceptions.FactoryFailureException;
+import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
+import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVRow;
+import edu.brown.cs.student.main.CSV.CSVParserLibrary.CreatorFromRow;
+import edu.brown.cs.student.main.CSV.CSVParserLibrary.Exceptions.FactoryFailureException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

@@ -10,6 +10,9 @@ import static org.mockito.Mockito.*;
 import spark.Request;
 import spark.Response;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 public class LoadCSVHandlerTest {
 
 
@@ -32,30 +35,34 @@ public class LoadCSVHandlerTest {
 
     @Test
     public void testLoadCsvWithCorrectFilePath() throws Exception {
-        when(mockRequest.queryParams("filepath")).thenReturn("correct/path/to/csv");
+        when(mockRequest.queryParams("filepath")).thenReturn("data/census.csv");
+        when(mockRequest.queryParams()).thenReturn(new HashSet<>(Arrays.asList("filepath")));
         Object result = handler.handle(mockRequest, mockResponse);
         assertTrue(result.toString().contains("success"));
     }
 
     @Test
     public void testLoadCsvWithMissingFilePath() throws Exception {
-        when(mockRequest.queryParams("filepath")).thenReturn(null);
+        when(mockRequest.queryParams("filepath")).thenReturn("");
+        when(mockRequest.queryParams()).thenReturn(new HashSet<>(Arrays.asList("filepath")));
         Object result = handler.handle(mockRequest, mockResponse);
-        assertTrue(result.toString().contains("error_bad_request"));
+        assertTrue(result.toString().contains("{\"response_type\":\"202\",\"exception_message\":\"error_bad_request: Empty File Path\"}"));
     }
 
     @Test
     public void testLoadCsvWithNonexistentFilePath() throws Exception {
-        when(mockRequest.queryParams("filepath")).thenReturn("nonexistent/path/to/csv");
+        when(mockRequest.queryParams("filepath")).thenReturn("data/non_exist.csv");
+        when(mockRequest.queryParams()).thenReturn(new HashSet<>(Arrays.asList("filepath")));
         Object result = handler.handle(mockRequest, mockResponse);
-        assertTrue(result.toString().contains("error_datasource"));
+        assertTrue(result.toString().contains("{\"response_type\":\"201\",\"exception_message\":\"Error_datasource: No file Found at data/non_exist.csv\"}"));
     }
 
     @Test
     public void testLoadCsvWithIncorrectFilePathParam() throws Exception {
-        when(mockRequest.queryParams("filepat")).thenReturn("correct/path/to/csv");
+        when(mockRequest.queryParams("filepat")).thenReturn("data/census.csv");
+        when(mockRequest.queryParams()).thenReturn(new HashSet<>(Arrays.asList("filepat")));;
         Object result = handler.handle(mockRequest, mockResponse);
-        assertTrue(result.toString().contains("error_bad_json"));
+        assertTrue(result.toString().contains("error_bad_json: Query parameter 'filepath' is missing or incorrect."));
     }
 }
 
