@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class BroadbandDataHandler implements Route {
       List<LocationData> bbLoc = BroadbandDataAPIUtilities.deserializeLocData(broadbandJson);
       for (LocationData loc : bbLoc) {
         if (loc.getState().equals(this.stateCode) && loc.getCounty().equals(this.countyCode)) {
+          responseMap.put("access_date_time", LocalDateTime.now().toString());
           responseMap.put("response_type", request_type);
           responseMap.put(loc.getNAME(), loc.toList());
           // System.out.println("Response map \n" + responseMap);
