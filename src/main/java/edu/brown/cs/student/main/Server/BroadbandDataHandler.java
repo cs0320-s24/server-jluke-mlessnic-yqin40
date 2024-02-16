@@ -64,7 +64,7 @@ public class BroadbandDataHandler implements Route {
     if (!request.queryParams("get").isEmpty()){
       request_type = request.queryParams("get");
     }
-    System.out.println(request_type);
+    // System.out.println(request_type);
     String county = request.queryParams("county");
     String state = request.queryParams("state");
     // Protects against users not giving a state or county, elsewhere handles bad state/county
@@ -279,8 +279,8 @@ public class BroadbandDataHandler implements Route {
       throws URISyntaxException, IOException, InterruptedException {
     for (LocationData s : stateList) {
       if (s.getNAME().equals(state)) {
-        System.out.println(s.getNAME());
-        System.out.println(state);
+        // System.out.println(s.getNAME());
+        // System.out.println(state);
         this.stateCode = s.getState();
         // Now that a state code is defined, we can also find the county code
         try {
