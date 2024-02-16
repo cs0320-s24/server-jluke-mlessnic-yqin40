@@ -1,20 +1,8 @@
 package edu.brown.cs.student.main.Server;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import edu.brown.cs.student.main.BroadbandDataAPI.BroadbandDataAPIUtilities;
-import edu.brown.cs.student.main.BroadbandDataAPI.LocationData;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.print.attribute.URISyntax;
+import java.util.Arrays;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -25,7 +13,7 @@ import spark.Route;
  */
 public class BroadbandDataHandler implements Route {
 
-//  private final List<LocationData> stateList;
+  //  private final List<LocationData> stateList;
   private String stateCode;
   private String countyCode;
 
@@ -33,30 +21,44 @@ public class BroadbandDataHandler implements Route {
    * Initialize the stateList, allows the lookup of states in later queries without having to ping
    * the census api each time. This list should always exist (no need to remove due to caching)
    *
-   * @throws IOException          thrown when deserialization of the census api fails
-   * @throws URISyntaxException   thrown when the provided URI is not in a valid format for the
-   *                              census api
+   * @throws IOException thrown when deserialization of the census api fails
+   * @throws URISyntaxException thrown when the provided URI is not in a valid format for the census
+   *     api
    * @throws InterruptedException thrown when the get request fails (e.g. connection to census is
-   *                              lost)
+   *     lost)
    */
   BroadbandDataHandler() throws IOException, URISyntaxException, InterruptedException {
-//    this.stateList = fetchAllStates();
+    //    this.stateList = fetchAllStates();
   }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
     ACSProxy datasource = new ACSProxy();
+    // Just split apart the user args and pass them to the ACS proxy. The proxy will deal
+    // with calling the api and returning stuff as needed
+    String state = request.queryParams("state");
+    String county = request.queryParams("county");
+    String[] optionalGet = request.queryParamsValues("get");
+    String fullGet;
+    // Only populate fullGet if it was not left empty
+    if (!(optionalGet == null || optionalGet.length == 0)){
+      fullGet = String.join(",", optionalGet);
+    }
+
+
     System.out.println("getting broadband data...");
-      return null;
+    return null;
   }
 }
 //
 //  /**
-//   * Core driver of the broadband request and response loop. Deals with converting endpoint requests
+//   * Core driver of the broadband request and response loop. Deals with converting endpoint
+// requests
 //   * into internal census requests and finding the desired location's broadband information, or
 //   * returning a bad response otherwise
 //   *
-//   * @param request  endpoint requests, in the format of "?county=some%20county&state=some%20state"
+//   * @param request  endpoint requests, in the format of
+// "?county=some%20county&state=some%20state"
 //   *                 Additional params are ignored
 //   * @param response HTTP response to send information to (unused here)
 //   * @return a serialized map of response, code, and location data (or exception)
@@ -64,7 +66,8 @@ public class BroadbandDataHandler implements Route {
 //  @Override
 //  public Object handle(Request request, Response response) {
 //
-//    // Pulling specific params guarantees any junk params will be ignored. Do we want to check that
+//    // Pulling specific params guarantees any junk params will be ignored. Do we want to check
+// that
 //    // users only give good param set?
 //
 //    // Default get the broadband data, otherwise get whatever type the user provides
@@ -122,9 +125,11 @@ public class BroadbandDataHandler implements Route {
 //  /**
 //   * Convert a response map of String, Object into a serialized json for handling with spark
 //   *
-//   * @param response_type success or failure as a code, given here to allow users to define a custom
+//   * @param response_type success or failure as a code, given here to allow users to define a
+// custom
 //   *                      code optionally or uses 200 as a default
-//   * @param responseMap   a map from the handler containing a defining string mapped to the response
+//   * @param responseMap   a map from the handler containing a defining string mapped to the
+// response
 //   *                      object. For this case, the object is a list of strings built from a
 //   *                      location data object
 //   */
@@ -163,7 +168,8 @@ public class BroadbandDataHandler implements Route {
 //  /**
 //   * returned when no matching county/state was found from user's query
 //   *
-//   * @param response_type success or failure as a code, given here to allow users to define a custom
+//   * @param response_type success or failure as a code, given here to allow users to define a
+// custom
 //   *                      code optionally or uses 204 as a default (for failure)
 //   */
 //  public record NoRecordFailureResponse(String response_type, String exception_message) {
@@ -258,10 +264,12 @@ public class BroadbandDataHandler implements Route {
 //      throws URISyntaxException, IOException, InterruptedException {
 //
 //    String baseUrl =
-//        "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME," + request_type + "&for=county:";
+//        "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME," + request_type +
+// "&for=county:";
 //    String fullUrl = baseUrl + county + "&in=state:" + state;
 //    System.out.println("Full url: " + fullUrl);
-//    HttpRequest buildBoredApiRequest = HttpRequest.newBuilder().uri(new URI(fullUrl)).GET().build();
+//    HttpRequest buildBoredApiRequest = HttpRequest.newBuilder().uri(new
+// URI(fullUrl)).GET().build();
 //
 //    // Send that API request then store the response in this variable
 //    HttpResponse<String> sentBoredApiResponse =
@@ -274,7 +282,8 @@ public class BroadbandDataHandler implements Route {
 //  }
 //
 //  /**
-//   * This method finds the associated state code and county code for an endpoint user's query within
+//   * This method finds the associated state code and county code for an endpoint user's query
+// within
 //   * the census api then populates the global code variables with those codes
 //   *
 //   * @param state  plain english state provided by endpoint
@@ -325,7 +334,8 @@ public class BroadbandDataHandler implements Route {
 //  }
 //
 //  /**
-//   * Fetch a list of all states and their corresponding location codes. This allows less querying of
+//   * Fetch a list of all states and their corresponding location codes. This allows less querying
+// of
 //   * the full census API
 //   *
 //   * @return a list of LocationData objects containing a populated state field and name, although
@@ -358,4 +368,4 @@ public class BroadbandDataHandler implements Route {
 //      throw e;
 //    }
 //  }
-//}
+// }

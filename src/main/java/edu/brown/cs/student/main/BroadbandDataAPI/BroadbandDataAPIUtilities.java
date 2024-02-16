@@ -16,16 +16,14 @@ import java.util.Objects;
  */
 public class BroadbandDataAPIUtilities {
 
-  /**
-   * construct the api utilities object
-   */
+  /** construct the api utilities object */
   private BroadbandDataAPIUtilities() {}
 
   /**
    * Deserialize a json string back into a list. Each row should represent one county from which we
-   * can gather "the percentage of households with broadband access for a target location".
-   * Uses switching to determine which format of LocationData was returned (i.e. what info is
-   * present in the jsonList)
+   * can gather "the percentage of households with broadband access for a target location". Uses
+   * switching to determine which format of LocationData was returned (i.e. what info is present in
+   * the jsonList)
    *
    * @param jsonList a json response from the census API containing the percent of broadband access
    *     by household for a given state and county
@@ -53,36 +51,33 @@ public class BroadbandDataAPIUtilities {
         switch (innerList.size()) { // Ensure inner list has at least two elements (NAME and state)
           case 2:
             // Only state and state code given
-            locationDataList.add(new LocationData(innerList.get(0), innerList.get(1), "", 0.0f));
+            locationDataList.add(new LocationData(innerList.get(0), null, innerList.get(1), ""));
             break;
           case 3:
             // State, state code, county code given
             locationDataList.add(
-                new LocationData(innerList.get(0), innerList.get(1), innerList.get(2), 0.0f));
+                new LocationData(innerList.get(0), null, innerList.get(1), innerList.get(2)));
             break;
-          case 4:
+          default:
             // State, broadband data, state code, county code given
-            locationDataList.add(
-                new LocationData(
-                    innerList.get(0),
-                    innerList.get(2),
-                    innerList.get(3),
-                    Float.parseFloat(innerList.get(1))));
+            String name = innerList.get(0);
+            String stateCode = innerList.get(innerList.size() - 2); // Second last element
+            String countyCode = innerList.get(innerList.size() - 1); // Last element
+            List<String> broadbandData =
+                innerList.subList(1, innerList.size() - 2); // Sublist containing broadband data
+            locationDataList.add(new LocationData(name, broadbandData, stateCode, countyCode));
             break;
-            // TODO: add default case for unexpected sizes?
-          // Default case not provided because handler acts as proxy to prevent any other census
-          // api access outside of these cases
         }
       }
       return locationDataList;
 
     } catch (IOException e) {
       // Internal print for debugging
-      System.err.println("BroadbandHandler: string wasn't valid JSON.");
+      System.err.println("BroadbandHandler: string wasn't a JSON.");
       throw e;
     } catch (JsonDataException e) {
       // Internal print for debugging
-      System.err.println("BroadbandHandler: JSON wasn't in the right format.");
+      System.err.println("BroadbandHandler: JSON wasn't in expected right format.");
       throw e;
     }
   }

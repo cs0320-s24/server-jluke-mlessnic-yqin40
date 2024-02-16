@@ -1,4 +1,3 @@
 package edu.brown.cs.student.ServerTesting;
 
-public class LoadCSVHandlerTest {
-}
+public class LoadCSVHandlerTest {}
