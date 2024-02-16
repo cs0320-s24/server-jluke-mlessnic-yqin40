@@ -54,9 +54,22 @@ public class BroadbandDataHandler implements Route {
    */
   @Override
   public Object handle(Request request, Response response) {
+
+    // Pulling specific params guarantees any junk params will be ignored. Do we want to check that
+    // users only give good param set?
     String county = request.queryParams("county");
     String state = request.queryParams("state");
-
+    // Protects against users not giving a state or county, elsewhere handles bad state/county
+    if (county == null || state == null){
+      String response_string = "";
+      if (state == null){
+        response_string += "state must not be null ";
+      }
+      if (county == null){
+        response_string += "county must not be null";
+      }
+      return new NoRecordFailureResponse(response_string).serialize();
+    }
     Map<String, Object> responseMap = new HashMap<>();
 
     try {
