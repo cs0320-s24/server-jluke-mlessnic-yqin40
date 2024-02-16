@@ -10,4 +10,8 @@ public class ProxyCache implements LocationDataFinder{
     public LocationData find(String state, String county) {
         return null;
     }
+
+    public void addToCache(LocationData data) {
+
+    }
 }

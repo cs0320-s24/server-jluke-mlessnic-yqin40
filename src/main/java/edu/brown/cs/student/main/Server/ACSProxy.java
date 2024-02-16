@@ -39,7 +39,7 @@ public class ACSProxy {
 
     public void addToCache(String state, String county) {
         LocationData result = this.getFromAPI(state, county);
-        // add to proxyCache
+        this.proxyCache.addToCache(result);
     }
 
 
