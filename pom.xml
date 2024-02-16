@@ -64,6 +64,21 @@
       <version>1.7.36</version>
     </dependency>
 
+    <!-- This is a the Guava Library from google that we are using for caching.
+         -->
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>23.5-jre</version>
+      <!-- or 23.5-android for the Android flavor -->
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.1-jre</version>
+    </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>

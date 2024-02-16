@@ -1,7 +1,6 @@
 package edu.brown.cs.student.main.CSV.CSVParserLibrary;
 
 import edu.brown.cs.student.main.CSV.CSVParserLibrary.Exceptions.FactoryFailureException;
-
 import java.util.List;
 
 /**

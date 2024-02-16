@@ -3,21 +3,19 @@ package edu.brown.cs.student.main.Server;
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.CSV.CSVParserLibrary.CSVParser;
 import edu.brown.cs.student.main.CSV.Census.Census;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 public class LoadCSVHandler implements Route {
-    @Override
-    public Object handle(Request request, Response response) throws Exception {
-        Server.filepath = request.queryParams("filepath");
-//        Server.filepath = "data/stardata.csv";
-
+  @Override
+  public Object handle(Request request, Response response) throws Exception {
+    Server.filepath = request.queryParams("filepath");
+    //        Server.filepath = "data/stardata.csv";
 
         if (request.queryParams().contains("filepath")) {
             if (Server.filepath == null || Server.filepath.isEmpty()) {
