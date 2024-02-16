@@ -2,6 +2,7 @@ package edu.brown.cs.student.CSVParserTesting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class User2Test {
     List<List<String>> output;
 
     try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+
       CSVParser<List<String>> myParser = new CSVParser<>(br);
       output = myParser.parseToStringsFromReader(br, true);
     }
@@ -40,5 +42,6 @@ public class User2Test {
     List<Integer> foundIndices = mySearcher.search(searchVal);
     List<Integer> trueIndices = List.of(2);
     assertEquals(foundIndices, trueIndices);
+
   }
 }

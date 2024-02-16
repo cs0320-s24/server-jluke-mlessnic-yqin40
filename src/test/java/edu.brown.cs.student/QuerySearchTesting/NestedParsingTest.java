@@ -12,7 +12,7 @@ public class NestedParsingTest {
   public NestedParsingTest() {}
 
   @Test
-  public void simpleParsedQuery() throws SearchArgumentException {
+  public void simpleParsedQuery() throws SearchArgumentException, SearchArgumentException {
     String text = "and(query1,query2)";
     QueryBuilder queryBuilder = new QueryBuilder(text);
     String s = queryBuilder.getTextBetweenParentheses(text);

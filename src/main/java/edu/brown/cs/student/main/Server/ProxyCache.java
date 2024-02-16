@@ -13,6 +13,11 @@ import java.util.concurrent.TimeUnit;
 "As a developer calling your web API, I can retrieve the percentage of households with broadband access
 for a target location by providing the name of the target state and county in my request."
 
+<<<<<<< HEAD
+  public void addToCache(LocationData data) {}
+
+
+=======
 For CSCI 1340: incoming requests may also include a set of variables (taken from the official list) to be
 requested from the ACS. Since the front-end is not under your control, it may provide any arbitrary values
 as variable names, so consider error handling and the limitations of the ACS data carefully.
