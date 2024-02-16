@@ -25,4 +25,7 @@
    server errors
 * code cleanup (team)
 * javadocs (team)
+
+2/15
+* clean up view (add line break between items)
    

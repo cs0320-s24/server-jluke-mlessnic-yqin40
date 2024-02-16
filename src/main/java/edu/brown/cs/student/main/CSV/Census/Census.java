@@ -1,5 +1,7 @@
 package edu.brown.cs.student.main.CSV.Census;
 
+import java.util.List;
+
 public class Census {
     private String City;
     private String MedianHouseholdIncome;
@@ -44,6 +46,11 @@ public class Census {
     // Setter for PerCapitaIncome
     public void setPerCapitalIncome(String perCapitalIncome) {
         this.PerCapitalIncome = perCapitalIncome;
+    }
+
+
+    public List<String> turnIntoRawStrings() {
+        return List.of(this.City, this.MedianHouseholdIncome, this.MedianFamilyIncome, this.PerCapitalIncome);
     }
 }
 
