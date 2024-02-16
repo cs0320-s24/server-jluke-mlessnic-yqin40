@@ -17,89 +17,110 @@ public class SearchCSVHandler implements Route {
       new ArrayList<>(); // should this be more general?
   public List<Census> csvRows;
 
+  // getter method
   public List<List<String>> getCsvRowsAsList() {
     return new ArrayList<>(this.csvRowsAsList);
   }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-
     // check if file is loaded
     // get rows
     this.csvRows = Server.getcensusList();
-    for (Census c : csvRows) {
-      // convert back into strings
-      this.csvRowsAsList.add(c.turnIntoRawStrings());
-    }
+
 
     if (csvRows.isEmpty()) {
-      return new CSVSearchFailureResponse().serialize();
-      // return "No data available. Please load a CSV file first.";
+      return new CSVFileNotFoundResponse("error_datasource").serialize();
+//       return "No data available. Please load a CSV file first.";
+    }
+
+    for (Census c : this.csvRows) {
+      List<String> r = c.turnIntoRawStrings();
+//       convert back into strings
+      this.csvRowsAsList.add(r);
     }
 
     Searcher searcher =
         new Searcher(this.csvRowsAsList, true, false); // save hasHeaders and ignoreCase in Server
-
     Set<String> queryParams = request.queryParams();
-    if (queryParams.size() > 1) {
-      return new CSVSearchFailureResponse().serialize();
+
+    if (queryParams.size() != 1) {
+//      return "too many queries";
+      return new BadQueryResponse("incorrect_num_params").serialize();
     }
+
+    List<Integer> foundRowIndices;
+    List<List<String>> foundRows;
+    Map<String, Object> responseMap = new HashMap<>();
+
 
     // check if search value is provided
     if (queryParams.contains("find")) {
+      responseMap.put("type", "find");
       String searchVal = request.queryParams("find");
+      responseMap.put("searchValue", searchVal);
       if ((searchVal == null) || searchVal.isEmpty()) {
-        return new CSVSearchFailureResponse().serialize();
-        // return "No item to search for provided.";
+        return new BadQueryResponse("no_search_value_provided").serialize();
+//         return "No item to search for provided.";
       } else {
         // perform basic search
-        return new CSVSearchSuccessResponse(searcher.search(searchVal), this.csvRowsAsList)
-            .serialize();
+        foundRowIndices = searcher.search(searchVal);
+        foundRows = getRowsFromIndices(foundRowIndices, this.csvRowsAsList);
+        if (foundRows.isEmpty()) {
+          responseMap.put("result", "No rows found.");
+        } else {
+          responseMap.put("result", foundRows);
+        }
+        return new SuccessSearchResponse(responseMap).serialize();
       }
-
     } else if (queryParams.contains("query")) {
+      responseMap.put("type", "query");
       String query = request.queryParams("query");
+      responseMap.put("query", query);
       if (query == null || query.isEmpty()) {
-        return new CSVSearchFailureResponse().serialize();
-        // return "No query to search for provided.";
+        return new BadQueryResponse("no_query_provided").serialize();
+//         return "No query to search for provided.";
       } else {
         // perform query search
-        return new CSVSearchSuccessResponse(searcher.searchUsingQuery(query), this.csvRowsAsList)
-            .serialize();
+        foundRowIndices = searcher.searchUsingQuery(query);
+        foundRows = getRowsFromIndices(foundRowIndices, this.csvRowsAsList);
+        if (foundRows.isEmpty()) {
+          responseMap.put("result", "No rows found.");
+        } else {
+          responseMap.put("result", foundRows);
+        }
+        return new SuccessSearchResponse(responseMap).serialize();
+
+
+
       }
     } else {
       return new CSVSearchFailureResponse().serialize();
     }
   }
 
-  /** Success response structure for CSV content searching. */
-  public static class CSVSearchSuccessResponse {
-    private final String response_type;
-    private final List<List<String>> foundRows;
+  private List<List<String>> getRowsFromIndices(List<Integer> indices, List<List<String>> pool) {
+    List<List<String>> foundRows = new ArrayList<List<String>>();
+    for (int ind : indices) {
+      foundRows.add(pool.get(ind));
+    }
+    return foundRows;
+  }
 
-    public CSVSearchSuccessResponse(
-        List<Integer> foundRowIndices, List<List<String>> csvRowsAsList) {
-      this.response_type = "success";
-      this.foundRows = new ArrayList<List<String>>();
-      for (int ind : foundRowIndices) {
-        this.foundRows.add(csvRowsAsList.get(ind));
-      }
+
+  public record SuccessSearchResponse (String response_type, Map<String, Object> responseMap) {
+
+    public SuccessSearchResponse(Map<String, Object> responseMap) {
+      this("success", responseMap);
     }
 
-    public String serialize() {
-      try {
-        Moshi moshi = new Moshi.Builder().build();
-        Type listType = Types.newParameterizedType(List.class, Map.class);
-        JsonAdapter<List<List<String>>> jsonAdapter = moshi.adapter(listType);
-        return jsonAdapter.toJson(this.foundRows);
-      } catch (Exception e) {
-        e.printStackTrace();
-        throw e;
-      }
-    }
 
-    public String getResponse_type() {
-      return response_type;
+    /**
+     * @return this response, serialized as Json
+     */
+    String serialize() {
+      Moshi moshi = new Moshi.Builder().build();
+      return moshi.adapter(SearchCSVHandler.SuccessSearchResponse.class).toJson(this);
     }
   }
 
@@ -122,4 +143,55 @@ public class SearchCSVHandler implements Route {
       return response_type;
     }
   }
+
+  //
+
+  public record CSVFileNotFoundResponse(String response_type, String exception_message) {
+
+    public CSVFileNotFoundResponse(String exception_message) {
+      this("201", exception_message);
+    }
+
+    /**
+     * @return this response, serialized as Json
+     */
+    String serialize() {
+      Moshi moshi = new Moshi.Builder().build();
+      return moshi.adapter(SearchCSVHandler.CSVFileNotFoundResponse.class).toJson(this);
+    }
+  }
+
+  public record BadQueryResponse(String response_type, String exception_message) {
+
+    public BadQueryResponse(String exception_message) {
+      this("202", exception_message);
+    }
+
+    /**
+     * @return this response, serialized as Json
+     */
+    String serialize() {
+      Moshi moshi = new Moshi.Builder().build();
+      return moshi.adapter(SearchCSVHandler.BadQueryResponse.class).toJson(this);
+    }
+  }
+
+  public record BadJSONResponse(String response_type, String exception_message) {
+
+    public BadJSONResponse(String exception_message) {
+      this("203", exception_message);
+    }
+
+    /**
+     * @return this response, serialized as Json
+     */
+    String serialize() {
+      Moshi moshi = new Moshi.Builder().build();
+      return moshi.adapter(SearchCSVHandler.BadJSONResponse.class).toJson(this);
+    }
+  }
+
+
+
 }
+
