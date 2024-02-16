@@ -88,7 +88,8 @@ public class BroadbandDataHandler implements Route {
       List<LocationData> bbLoc = BroadbandDataAPIUtilities.deserializeLocData(broadbandJson);
       for (LocationData loc : bbLoc) {
         if (loc.getState().equals(this.stateCode) && loc.getCounty().equals(this.countyCode)) {
-          responseMap.put(loc.getNAME() + ", response_type: " + request_type, loc.toList());
+          responseMap.put("response_type", request_type);
+          responseMap.put(loc.getNAME(), loc.toList());
           // System.out.println("Response map \n" + responseMap);
           // Reset state and county code so if user enters a bad request next, they will
           // get a new (bad) response rather than just getting the old (good) response
