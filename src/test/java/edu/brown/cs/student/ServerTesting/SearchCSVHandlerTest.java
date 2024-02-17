@@ -6,6 +6,9 @@ import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.Server.SearchCSVHandler;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
+import java.util.Map;
+
 import okio.Buffer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -52,18 +55,40 @@ public class SearchCSVHandlerTest {
     Moshi moshi = new Moshi.Builder().build();
 
     // We'll use okio's Buffer class here
-    System.out.println(clientConnection.getInputStream());
+    //System.out.println(clientConnection.getInputStream());
     SearchCSVHandler.SuccessSearchResponse response =
         moshi
             .adapter(SearchCSVHandler.SuccessSearchResponse.class)
             .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
-    //
-    //        Soup carrot = new Soup("Carrot", Arrays.asList("carrot", "onion", "celery",
-    //                "garlic" , "ginger", "vegetable broth"), false);
-    //        Map<String, Object> result = (Map<String, Object>)
-    // response.responseMap().get("Carrot");
-    //        System.out.println(result.get("ingredients"));
-    //        assertEquals(carrot.getIngredients(), result.get("ingredients"));
+
+            Map<String, Object> result = response.responseMap();
+            System.out.println(result);
+//            assertEquals(result.get("result"), List.of(List.of("Barrington", "130,455.00", "154,441.00", "69.917.00")));
+    clientConnection.disconnect();
+  }
+
+  @Test
+  public void simpleQuerySearch() throws IOException {
+    this.loadCsvHelper();
+
+    String searchVal = "or(Providence,Barrington)"; // should be first row
+    String apiRequest = "searchcsv?query=" + searchVal;
+    HttpURLConnection clientConnection = ServerTestingUtilities.tryRequest(apiRequest);
+
+    assertEquals(200, clientConnection.getResponseCode()); // success code
+
+    Moshi moshi = new Moshi.Builder().build();
+
+    // We'll use okio's Buffer class here
+    //System.out.println(clientConnection.getInputStream());
+    SearchCSVHandler.SuccessSearchResponse response =
+            moshi
+                    .adapter(SearchCSVHandler.SuccessSearchResponse.class)
+                    .fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+
+    Map<String, Object> result = response.responseMap();
+    System.out.println(result);
+//            assertEquals(result.get("result"), List.of(List.of("Barrington", "130,455.00", "154,441.00", "69.917.00")));
     clientConnection.disconnect();
   }
 }
