@@ -11,6 +11,10 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+
+/**
+ *  Handler class to handle the csvsearch endpoint
+ */
 public class SearchCSVHandler implements Route {
 
   private final List<List<String>> csvRowsAsList =
@@ -99,6 +103,12 @@ public class SearchCSVHandler implements Route {
     }
   }
 
+  /**
+   *
+   * @param indices
+   * @param pool
+   * @return the found rows to be included in the response
+   */
   private List<List<String>> getRowsFromIndices(List<Integer> indices, List<List<String>> pool) {
     List<List<String>> foundRows = new ArrayList<List<String>>();
     for (int ind : indices) {
@@ -108,6 +118,11 @@ public class SearchCSVHandler implements Route {
   }
 
 
+  /**
+   *
+   * @param response_type
+   * @param responseMap
+   */
   public record SuccessSearchResponse (String response_type, Map<String, Object> responseMap) {
 
     public SuccessSearchResponse(Map<String, Object> responseMap) {
@@ -146,6 +161,11 @@ public class SearchCSVHandler implements Route {
 
   //
 
+  /**
+   *
+   * @param response_type
+   * @param exception_message
+   */
   public record CSVFileNotFoundResponse(String response_type, String exception_message) {
 
     public CSVFileNotFoundResponse(String exception_message) {
@@ -161,6 +181,11 @@ public class SearchCSVHandler implements Route {
     }
   }
 
+  /**
+   *
+   * @param response_type
+   * @param exception_message
+   */
   public record BadQueryResponse(String response_type, String exception_message) {
 
     public BadQueryResponse(String exception_message) {
@@ -176,6 +201,11 @@ public class SearchCSVHandler implements Route {
     }
   }
 
+  /**
+   *
+   * @param response_type
+   * @param exception_message
+   */
   public record BadJSONResponse(String response_type, String exception_message) {
 
     public BadJSONResponse(String exception_message) {
