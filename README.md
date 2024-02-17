@@ -73,16 +73,26 @@ Each test case is designed to verify that a specific part of the program works a
 # SearchCSV
 _**Design Choices**_
 
+The SearchCSVHandler utilizes the Searcher class from the CSV Library. 
+The SearchCSVHandler itself parses through the parameters specified by the user url. It only accepts "find" and "query"
+as possible fields. Find does a simple search of the csvfile for a value and query allows for the and/or/not queries. 
+A successful search creates the success response, regardless of whether the item was found. 
+Other scenarios, including incorrect queries, no file found, and json, are all handled through specific error codes.  
+
 _**Data Structures & High-Level Explanations**_
+This library supports nested queries through a recursive chain of QueryBuilders, such that a Query (built by the root QueryBuilder) is able to call upon a QueryBuilder to create new Queries.
+There are two types of Queries: the and/or/not query classes are only able to take in other queries as parameters. The column (which allows the specification of a column by name or index) and basic queries are the only queries that are able to be evaluated.
 
 _**Runtime/Space Optimizations**_
 
 _**Errors/Bugs**_
-
-_**Checkstyle Error Explanations**_
+When parsing a query, the parser may struggle if a value contains a comma or a space and therefore make an incorrect or unbalanced query.  
 
 _**Testing Suites**_
+There are two testing suites. 
 
+The QuerySearchTesting Suite just tests the search functionality.
+The SearchCSVHandleTest suite tests the search functionality from the server. 
 
 # Broadband API 
 
