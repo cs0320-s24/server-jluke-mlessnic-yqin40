@@ -51,12 +51,12 @@ public class BroadbandDataAPIUtilities {
         switch (innerList.size()) { // Ensure inner list has at least two elements (NAME and state)
           case 2:
             // Only state and state code given
-            locationDataList.add(new LocationData(innerList.get(0), null, innerList.get(1), ""));
+            locationDataList.add(new LocationData(innerList.get(0), new ArrayList<>(), innerList.get(1), ""));
             break;
           case 3:
             // State, state code, county code given
             locationDataList.add(
-                new LocationData(innerList.get(0), null, innerList.get(1), innerList.get(2)));
+                new LocationData(innerList.get(0), new ArrayList<>(), innerList.get(1), innerList.get(2)));
             break;
           default:
             // State, broadband data, state code, county code given

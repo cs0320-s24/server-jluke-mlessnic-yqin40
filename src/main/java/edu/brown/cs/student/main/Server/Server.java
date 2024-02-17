@@ -68,7 +68,7 @@ public class Server {
     Spark.get("loadcsv", new LoadCSVHandler());
     Spark.get("viewcsv", new ViewCSVHandler());
     Spark.get("searchcsv", new SearchCSVHandler());
-//    Spark.get("broadband", new BroadbandDataHandler());
+    Spark.get("broadband", new BroadbandDataHandler());
 
     // Set up a route to handle GET requests to the root URL "/"
     Spark.get("/", (req, res) -> "Hello, World!");

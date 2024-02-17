@@ -109,7 +109,9 @@ public class ProxyCache implements LocationDataFinder {
    * @return location if present or null otherwise
    */
   public LocationData getLoc(Request request) {
-    return this.myCache.getIfPresent(request);
+    LocationData retLoc = this.myCache.getIfPresent(request);
+    System.out.println(this.myCache.stats());
+    return retLoc;
   }
 
   /**

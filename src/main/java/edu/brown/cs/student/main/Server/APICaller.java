@@ -83,7 +83,7 @@ public class APICaller implements LocationDataFinder {
       // Step 3: grab any optional variable the user provided
       List<String> requestedData = new ArrayList<>(bbLoc.getData());
       // Adds the variable data to the list of strings
-      if (!dataVars.isBlank()) {
+      if (!(dataVars == null)) {
         List<LocationData> varData = BroadbandDataAPIUtilities.deserializeLocData(
             optionalVarRequest(dataVars, state, county));
         for (LocationData loc : varData) {
@@ -228,7 +228,7 @@ public class APICaller implements LocationDataFinder {
           HttpClient.newBuilder()
               .build()
               .send(buildBoredApiRequest, BodyHandlers.ofString());
-      // System.out.println("repsonse: " + sentBoredApiResponse.body());
+      System.out.println("repsonse: " + sentBoredApiResponse.body());
       return BroadbandDataAPIUtilities.deserializeLocData(sentBoredApiResponse.body());
 
       // TODO: modify to look at response status for error handling
